@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>ESG Offset Partners – Global Marketplace for Verified ESG Credits</title>
-  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (incl. biochar removals), renewables and voluntary plastic credits, plus VCUs under VCS v4.4. Build your ESG mix, pay via escrow, receive a QR-verifiable certificate retired in a recognized registry."/>
+  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (biochar removals), renewable energy, plastic credits, and VCUs (VCS v4.4). Build a custom ESG mix, pay via escrow, receive a QR-verifiable retirement certificate."/>
   <link rel="canonical" href="https://www.esgoffset.com/"/>
 
   <!-- Open Graph -->
@@ -58,12 +58,6 @@
       <a href="#suppliers" class="opacity-90 hover:opacity-100">Suppliers</a>
       <a href="#reports" class="opacity-90 hover:opacity-100">ESG Reports</a>
       <div class="flex items-center gap-2">
-        <select id="lang" aria-label="Language" class="rounded-md border border-white/20 bg-transparent px-2 py-2">
-          <option value="en">EN</option><option value="sk">SK</option>
-        </select>
-        <select id="curr" aria-label="Currency" class="rounded-md border border-white/20 bg-transparent px-2 py-2">
-          <option value="EUR">€ EUR</option><option value="USD">$ USD</option><option value="GBP">£ GBP</option>
-        </select>
         <button id="loginBtn" class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft">Log in</button>
         <a href="#cta" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft">Get started</a>
       </div>
@@ -79,9 +73,9 @@
         <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-100 text-sm">
           <span>✔</span><span>Verified credits • Registry retirement • White-label certificates</span>
         </div>
-        <h1 class="mt-3 text-4xl/tight font-semibold" data-i18n="hero.h1">One platform for verified ESG credits — globally.</h1>
+        <h1 class="mt-3 text-4xl/tight font-semibold">One platform for verified ESG credits — globally.</h1>
         <p class="mt-3 text-slate-300 text-lg">
-          Buy carbon offsets (incl. biochar removals), renewables and voluntary plastic credits. Add VCUs under VCS v4.4.
+          Buy carbon offsets (incl. biochar removals), renewable energy (incl. reforestation, wind, solar, hydro), plastic credits, and VCUs (VCS v4.4).
           Build a custom mix for your ESG reporting. Escrow payments. QR-verifiable retirement.
         </p>
         <div class="mt-4 flex flex-wrap gap-3">
@@ -104,10 +98,10 @@
         </div>
       </div>
 
-      <!-- Mix Calculator -->
+      <!-- Mix Calculator (4 sliders) -->
       <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5 shadow-soft">
         <h3 class="text-xl font-semibold">Quick ESG Mix Calculator</h3>
-        <p class="mt-1 text-xs text-slate-400">Indicative prices per tCO₂: Biochar €123, Renewables €4, Plastic €10. Final price depends on availability & project selection.</p>
+        <p class="mt-1 text-xs text-slate-400">Indicative prices per tCO₂: Biochar €123, Renewable Energy €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
 
         <div class="mt-3 flex items-center gap-3">
           <label for="tonnes" class="text-sm text-slate-300 w-full">tCO₂</label>
@@ -116,16 +110,20 @@
 
         <div class="mt-3 space-y-3">
           <div class="flex items-center gap-3">
-            <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar %</label>
-            <input id="pBiochar" type="range" min="0" max="100" value="30" class="w-full"/>
+            <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar (123 €/t)</label>
+            <input id="pBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
           </div>
           <div class="flex items-center gap-3">
-            <label for="pRenew" class="text-sm text-slate-300 w-full">Renewables %</label>
-            <input id="pRenew" type="range" min="0" max="100" value="60" class="w-full"/>
+            <label for="pRenew" class="text-sm text-slate-300 w-full">Renewable Energy – incl. reforestation, wind, solar, hydro (4 €/t)</label>
+            <input id="pRenew" type="range" min="0" max="100" value="50" class="w-full"/>
           </div>
           <div class="flex items-center gap-3">
-            <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic %</label>
-            <input id="pPlastic" type="range" min="0" max="100" value="10" class="w-full"/>
+            <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic Credits (200 €/t)</label>
+            <input id="pPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
+          </div>
+          <div class="flex items-center gap-3">
+            <label for="pVCS" class="text-sm text-slate-300 w-full">VCUs – VCS v4.4 (4 €/t)</label>
+            <input id="pVCS" type="range" min="0" max="100" value="10" class="w-full"/>
           </div>
           <div class="text-xs text-slate-400">Total: <b id="pTotal">100%</b> — <span class="opacity-80">auto-normalized</span></div>
         </div>
@@ -177,16 +175,17 @@
     </div>
   </section>
 
-  <!-- Featured projects (4 karty) -->
+  <!-- Featured projects (4 cards) -->
   <section class="mx-auto max-w-[1200px] px-5 pb-10" id="catalog">
     <h2 class="text-2xl font-semibold">Featured credits</h2>
     <div class="mt-3 grid gap-4 md:grid-cols-4">
 
       <!-- Biochar Removal -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Biochar_in_soil.jpg/1280px-Biochar_in_soil.jpg"
-          alt="Biochar removal project (biochar applied into soil)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+             src="./assets/biochar.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;26&quot;>Biochar Removal</text></svg>'"
+             alt="Biochar removal project (biochar applied into soil)"/>
         <div class="p-3">
           <b>Biochar Removal • EU</b>
           <div class="mt-1 text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
@@ -198,30 +197,32 @@
         </div>
       </article>
 
-      <!-- Wind Energy -->
+      <!-- Renewable Energy (incl. reforestation, wind, solar, hydro) -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Wind_Turbines_and_Cornfields.jpg/1280px-Wind_Turbines_and_Cornfields.jpg"
-          alt="Wind energy project (onshore wind turbines)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+             src="./assets/renewables.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>Renewable Energy</text></svg>'"
+             alt="Renewable energy projects (reforestation, wind, solar, hydro)"/>
         <div class="p-3">
-          <b>Wind Energy • AT</b>
-          <div class="mt-1 text-xs text-slate-400">~€4 / t • Registry: Verra • Methodology: Renewables</div>
+          <b>Renewable Energy • Global</b>
+          <div class="mt-1 text-xs text-slate-400">~€4 / t • Registry: Verra/GS/ACR • Methodology: Renewables & AFOLU</div>
           <div class="mt-2 flex items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Renewables</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Vintage 2023</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Various vintages</span>
           </div>
         </div>
       </article>
 
-      <!-- Plastic Cleanup -->
+      <!-- Plastic Credits -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
-          src="https://images.unsplash.com/photo-1565710150145-08b5e5b7a529?auto=format&fit=crop&w=1280&q=80"
-          alt="Plastic cleanup project (coastal cleanup volunteers)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+             src="./assets/plastic.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>Plastic Credits</text></svg>'"
+             alt="Plastic cleanup project (verified collection/recovery)"/>
         <div class="p-3">
-          <b>Plastic Cleanup • Global</b>
-          <div class="mt-1 text-xs text-slate-400">~€10 / t • Standard: PWRS/PCX • Verified collection</div>
+          <b>Plastic Credits • Global</b>
+          <div class="mt-1 text-xs text-slate-400">~€200 / t • Standard: PWRS/PCX • Verified collection/recovery</div>
           <div class="mt-2 flex items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Plastic</span>
@@ -232,9 +233,10 @@
 
       <!-- VCUs (VCS v4.4) -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Forest_Aerial_View.jpg/1280px-Forest_Aerial_View.jpg"
-          alt="Verified Carbon Units (VCS v4.4) — forest/land-use project"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+             src="./assets/vcs.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>VCUs (VCS v4.4)</text></svg>'"
+             alt="Verified Carbon Units (VCS v4.4) — forest/land-use, energy, efficiency"/>
         <div class="p-3">
           <b>Verified Carbon Units (VCUs) • Global</b>
           <div class="mt-1 text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
@@ -262,7 +264,7 @@
       <div class="rounded-xl border border-white/10 bg-white/5 p-4">
         <div class="mb-2 grid h-7 w-7 place-items-center rounded-full bg-brand text-brand-dark font-bold">2</div>
         <b>Create RFQ / Build a mix</b>
-        <div class="text-xs text-slate-400">Set volumes and mix rules (removal %, renewables cap, plastic share).</div>
+        <div class="text-xs text-slate-400">Set volumes and mix rules (removal %, renewables cap, plastic share, VCS split).</div>
       </div>
       <div class="rounded-xl border border-white/10 bg-white/5 p-4">
         <div class="mb-2 grid h-7 w-7 place-items-center rounded-full bg-brand text-brand-dark font-bold">3</div>
@@ -282,7 +284,7 @@
     <div class="grid gap-6 md:grid-cols-2 items-start">
       <div>
         <h2 class="text-2xl font-semibold">Suppliers — sell your verified credits</h2>
-        <p class="mt-1 text-slate-300">List your Verra, Gold Standard, ACR or Puro.earth units (or plastic under PWRS/PCX). Set capacity and price ranges; we route global demand to you.</p>
+        <p class="mt-1 text-slate-300">List your Verra, Gold Standard, ACR or Puro.earth units (plus plastic under PWRS/PCX). Set capacity and price ranges; we route global demand to you.</p>
         <div class="mt-3 flex flex-wrap gap-2">
           <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">White-label agreement</span>
           <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">API / CSV upload</span>
@@ -393,36 +395,19 @@
 </div>
 
 <script>
-  // i18n EN/SK (demo)
-  const i18n = {
-    en:{'hero.h1':'One platform for verified ESG credits — globally.'},
-    sk:{'hero.h1':'Jedna platforma pre overené ESG kredity — globálne.'}
-  };
+  // Helpers
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
+  const fmt = (n,curr='EUR') => new Intl.NumberFormat(undefined,{style:'currency',currency:curr,maximumFractionDigits:2}).format(n);
 
-  function setLang(l){
-    document.documentElement.lang=l;
-    const dict=i18n[l]||i18n.en;
-    $$('[data-i18n="hero.h1"]').forEach(n=>n.textContent=dict['hero.h1']||n.textContent);
-  }
-
-  // Currency switch (simple FX)
-  const FX={EUR:1, USD:1.09, GBP:0.85}; let curr='EUR';
-  function fmt(n){return new Intl.NumberFormat(undefined,{style:'currency',currency:curr,maximumFractionDigits:2}).format(n);}
-  $('#curr').addEventListener('change', e=>{curr=e.target.value; recalc();});
-  $('#lang').addEventListener('change', e=>setLang(e.target.value));
-  setLang('en');
-
-  // Mix calculator
-  const pricesEUR={biochar:123, renew:4, plastic:10};
-  const sliders=['pBiochar','pRenew','pPlastic'].map(id=>$('#'+id));
-  sliders.forEach(s=>s.addEventListener('input',()=>{normalize(); recalc();}));
+  // Mix calculator (4 sliders)
+  const pricesEUR={ biochar:123, renew:4, plastic:200, vcs:4 };
+  const sliders=['pBiochar','pRenew','pPlastic','pVCS'].map(id=>$('#'+id));
   $('#tonnes').addEventListener('input', recalc);
+  sliders.forEach(s=>s.addEventListener('input',()=>{ normalize(); recalc(); }));
 
   function normalize(){
-    let vals=sliders.map(s=>+s.value), sum=vals.reduce((a,b)=>a+b,0);
-    if(sum===100) { $('#pTotal').textContent='100%'; return; }
+    let vals=sliders.map(s=>+s.value), sum=vals.reduce((a,b)=>a+b,0)||1;
     vals=vals.map(v=>Math.round(v*100/sum));
     const drift=100-vals.reduce((a,b)=>a+b,0);
     if(drift!==0){ const idx=vals.indexOf(Math.max(...vals)); vals[idx]+=drift; }
@@ -433,14 +418,13 @@
   function recalc(){
     const t=Math.max(1, parseFloat($('#tonnes').value)||0);
     $('#tonnes').value=t;
-    const pB=+$('#pBiochar').value/100, pR=+$('#pRenew').value/100, pP=+$('#pPlastic').value/100;
-    const avgEUR = pB*pricesEUR.biochar + pR*pricesEUR.renew + pP*pricesEUR.plastic;
+    const pB=+$('#pBiochar').value/100, pR=+$('#pRenew').value/100, pP=+$('#pPlastic').value/100, pV=+$('#pVCS').value/100;
+    const avgEUR = pB*pricesEUR.biochar + pR*pricesEUR.renew + pP*pricesEUR.plastic + pV*pricesEUR.vcs;
     const subtotalEUR = avgEUR * t;
     const feeEUR = subtotalEUR * 0.12;
-    const fx=FX[curr]||1;
-    $('#avgPrice').textContent=fmt(avgEUR*fx);
-    $('#subtotal').textContent=fmt(subtotalEUR*fx);
-    $('#fee').textContent=fmt(feeEUR*fx);
+    $('#avgPrice').textContent=fmt(avgEUR,'EUR');
+    $('#subtotal').textContent=fmt(subtotalEUR,'EUR');
+    $('#fee').textContent=fmt(feeEUR,'EUR');
   }
   normalize(); recalc();
 
@@ -467,8 +451,8 @@
   // Footer year
   $('#yr').textContent=new Date().getFullYear();
 
-  // KPIs stay "—" until API populates:
-  // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{ $('#kpi-credits').textContent=inv; $('#kpi-suppliers').textContent=sup; });
+  // KPIs – keep placeholders until API
+  // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{$('#kpi-credits').textContent=inv;$('#kpi-suppliers').textContent=sup;});
 
   // Login demo
   $('#loginBtn').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
