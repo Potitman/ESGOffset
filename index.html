@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>ESG Offset Partners – Global Marketplace for Verified ESG Credits</title>
-  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (incl. biochar removals), renewables and voluntary plastic credits. Build your ESG mix, pay via escrow, receive a QR-verifiable certificate retired in a recognized registry."/>
+  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (incl. biochar removals), renewables and voluntary plastic credits, plus VCUs under VCS v4.4. Build your ESG mix, pay via escrow, receive a QR-verifiable certificate retired in a recognized registry."/>
   <link rel="canonical" href="https://www.esgoffset.com/"/>
 
   <!-- Open Graph -->
@@ -19,9 +19,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: {
-            brand: { DEFAULT: '#00a36c', soft: '#71d7b0', dark:'#042a1b' }
-          },
+          colors: { brand: { DEFAULT: '#00a36c', soft: '#71d7b0', dark:'#042a1b' } },
           boxShadow: { soft: '0 6px 30px rgba(0,0,0,.25)' }
         }
       }
@@ -30,26 +28,10 @@
 
   <!-- Structured data -->
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Organization",
-    "name":"ESG Offset Partners",
-    "url":"https://www.esgoffset.com",
-    "logo":"https://www.esgoffset.com/assets/logo.png",
-    "sameAs":[]
-  }
+  { "@context":"https://schema.org","@type":"Organization","name":"ESG Offset Partners","url":"https://www.esgoffset.com","logo":"https://www.esgoffset.com/assets/logo.png","sameAs":[] }
   </script>
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebSite",
-    "url":"https://www.esgoffset.com",
-    "potentialAction":{
-      "@type":"SearchAction",
-      "target":"https://www.esgoffset.com/?q={search_term_string}",
-      "query-input":"required name=search_term_string"
-    }
-  }
+  { "@context":"https://schema.org","@type":"WebSite","url":"https://www.esgoffset.com","potentialAction":{"@type":"SearchAction","target":"https://www.esgoffset.com/?q={search_term_string}","query-input":"required name=search_term_string"} }
   </script>
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%2300a36c' d='M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z'/%3E%3C/svg%3E"/>
@@ -97,9 +79,9 @@
         <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-100 text-sm">
           <span>✔</span><span>Verified credits • Registry retirement • White-label certificates</span>
         </div>
-        <h1 class="mt-3 text-4xl/tight font-semibold">One platform for verified ESG credits — globally.</h1>
+        <h1 class="mt-3 text-4xl/tight font-semibold" data-i18n="hero.h1">One platform for verified ESG credits — globally.</h1>
         <p class="mt-3 text-slate-300 text-lg">
-          Buy carbon offsets (incl. biochar removals), renewables and voluntary plastic credits.
+          Buy carbon offsets (incl. biochar removals), renewables and voluntary plastic credits. Add VCUs under VCS v4.4.
           Build a custom mix for your ESG reporting. Escrow payments. QR-verifiable retirement.
         </p>
         <div class="mt-4 flex flex-wrap gap-3">
@@ -178,7 +160,9 @@
             <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">ACR</span>
             <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Puro.earth</span>
           </div>
-          <p class="mt-2 text-xs text-slate-400">Registry integrations: API/lookup (MVP: Puro.earth API; Verra/GS via manual TXID). Roadmap: full automation.</p>
+          <p class="mt-2 text-xs text-slate-400">
+            We support verifiable purchases and retirements of VCUs compliant with Verified Carbon Standard (VCS v4.4). Each VCU equals 1 tCO₂e and is retired on behalf of the buyer in the Verra registry (TXID & public record included).
+          </p>
         </div>
 
         <!-- Verify retirement -->
@@ -193,22 +177,19 @@
     </div>
   </section>
 
-  <!-- Featured projects -->
+  <!-- Featured projects (4 karty) -->
   <section class="mx-auto max-w-[1200px] px-5 pb-10" id="catalog">
     <h2 class="text-2xl font-semibold">Featured credits</h2>
-    <div class="mt-3 grid gap-4 md:grid-cols-3">
-      <!-- Biochar -->
+    <div class="mt-3 grid gap-4 md:grid-cols-4">
+
+      <!-- Biochar Removal -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img
-          loading="lazy" width="1200" height="160" class="h-40 w-full object-cover"
-          src="https://images.unsplash.com/photo-1603575448953-8f3a2b9f8c10?q=80&w=1200&auto=format&fit=crop"
-          srcset="https://images.unsplash.com/photo-1603575448953-8f3a2b9f8c10?q=80&w=600&auto=format&fit=crop 600w,
-                  https://images.unsplash.com/photo-1603575448953-8f3a2b9f8c10?q=80&w=1200&auto=format&fit=crop 1200w"
-          sizes="(max-width:980px) 100vw, 33vw"
-          alt="Biochar removal project (forest soil application)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Biochar_in_soil.jpg/1280px-Biochar_in_soil.jpg"
+          alt="Biochar removal project (biochar applied into soil)"/>
         <div class="p-3">
           <b>Biochar Removal • EU</b>
-          <div class="mt-1 text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: biochar</div>
+          <div class="mt-1 text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
           <div class="mt-2 flex items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Removal</span>
@@ -217,18 +198,14 @@
         </div>
       </article>
 
-      <!-- Wind -->
+      <!-- Wind Energy -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img
-          loading="lazy" width="1200" height="160" class="h-40 w-full object-cover"
-          src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop"
-          srcset="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=600&auto=format&fit=crop 600w,
-                  https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop 1200w"
-          sizes="(max-width:980px) 100vw, 33vw"
-          alt="Wind energy project (turbines on ridge)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Wind_Turbines_and_Cornfields.jpg/1280px-Wind_Turbines_and_Cornfields.jpg"
+          alt="Wind energy project (onshore wind turbines)"/>
         <div class="p-3">
           <b>Wind Energy • AT</b>
-          <div class="mt-1 text-xs text-slate-400">~€4 / t • Registry: Verra • Methodology: renewables</div>
+          <div class="mt-1 text-xs text-slate-400">~€4 / t • Registry: Verra • Methodology: Renewables</div>
           <div class="mt-2 flex items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Renewables</span>
@@ -237,15 +214,11 @@
         </div>
       </article>
 
-      <!-- Plastic -->
+      <!-- Plastic Cleanup -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img
-          loading="lazy" width="1200" height="160" class="h-40 w-full object-cover"
-          src="https://images.unsplash.com/photo-1520975693410-001d1615b3b1?q=80&w=1200&auto=format&fit=crop"
-          srcset="https://images.unsplash.com/photo-1520975693410-001d1615b3b1?q=80&w=600&auto=format&fit=crop 600w,
-                  https://images.unsplash.com/photo-1520975693410-001d1615b3b1?q=80&w=1200&auto=format&fit=crop 1200w"
-          sizes="(max-width:980px) 100vw, 33vw"
-          alt="Plastic cleanup project (shoreline volunteers)"/>
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
+          src="https://images.unsplash.com/photo-1565710150145-08b5e5b7a529?auto=format&fit=crop&w=1280&q=80"
+          alt="Plastic cleanup project (coastal cleanup volunteers)"/>
         <div class="p-3">
           <b>Plastic Cleanup • Global</b>
           <div class="mt-1 text-xs text-slate-400">~€10 / t • Standard: PWRS/PCX • Verified collection</div>
@@ -256,6 +229,23 @@
           </div>
         </div>
       </article>
+
+      <!-- VCUs (VCS v4.4) -->
+      <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover" referrerpolicy="no-referrer"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Forest_Aerial_View.jpg/1280px-Forest_Aerial_View.jpg"
+          alt="Verified Carbon Units (VCS v4.4) — forest/land-use project"/>
+        <div class="p-3">
+          <b>Verified Carbon Units (VCUs) • Global</b>
+          <div class="mt-1 text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
+          <div class="mt-2 flex items-center gap-2">
+            <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">VCU</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">VCS v4.4</span>
+          </div>
+        </div>
+      </article>
+
     </div>
     <p class="mt-2 text-xs text-slate-400">Prices are indicative; final price depends on availability and project selection.</p>
   </section>
@@ -320,36 +310,16 @@
   <section class="mx-auto max-w-[1200px] px-5 pb-10" id="reports">
     <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5">
       <h2 class="text-2xl font-semibold">ESG reporting made simple</h2>
-      <p class="mt-1 text-slate-300">Export transaction-level data for GHG Protocol scopes 1/2/3. Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
+      <p class="mt-1 text-slate-300">Export transaction-level data for GHG Protocol scopes 1/2/3 (incl. VCUs under VCS v4.4). Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
       <div class="mt-3 overflow-hidden rounded-xl border border-white/10">
         <table class="w-full text-left text-sm">
           <thead class="bg-white/5">
-            <tr>
-              <th class="px-4 py-3">Dataset</th>
-              <th class="px-4 py-3">Description</th>
-              <th class="px-4 py-3">Format</th>
-              <th class="px-4 py-3">Action</th>
-            </tr>
+            <tr><th class="px-4 py-3">Dataset</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Format</th><th class="px-4 py-3">Action</th></tr>
           </thead>
           <tbody>
-            <tr class="border-t border-white/10">
-              <td class="px-4 py-3">Certificate bundle</td>
-              <td class="px-4 py-3">All WL certificates incl. QR</td>
-              <td class="px-4 py-3">PDF/A</td>
-              <td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download</button></td>
-            </tr>
-            <tr class="border-t border-white/10">
-              <td class="px-4 py-3">Transactions</td>
-              <td class="px-4 py-3">Line-items with unit IDs & TXIDs</td>
-              <td class="px-4 py-3">CSV/XLSX</td>
-              <td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Export</button></td>
-            </tr>
-            <tr class="border-t border-white/10">
-              <td class="px-4 py-3">API access</td>
-              <td class="px-4 py-3">Webhook + OAuth2 client</td>
-              <td class="px-4 py-3">JSON</td>
-              <td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Generate keys</button></td>
-            </tr>
+            <tr class="border-t border-white/10"><td class="px-4 py-3">Certificate bundle</td><td class="px-4 py-3">All WL certificates incl. QR</td><td class="px-4 py-3">PDF/A</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download</button></td></tr>
+            <tr class="border-t border-white/10"><td class="px-4 py-3">Transactions</td><td class="px-4 py-3">Line-items with unit IDs & TXIDs</td><td class="px-4 py-3">CSV/XLSX</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Export</button></td></tr>
+            <tr class="border-t border-white/10"><td class="px-4 py-3">API access</td><td class="px-4 py-3">Webhook + OAuth2 client</td><td class="px-4 py-3">JSON</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Generate keys</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -452,7 +422,7 @@
 
   function normalize(){
     let vals=sliders.map(s=>+s.value), sum=vals.reduce((a,b)=>a+b,0);
-    if(sum===100) return;
+    if(sum===100) { $('#pTotal').textContent='100%'; return; }
     vals=vals.map(v=>Math.round(v*100/sum));
     const drift=100-vals.reduce((a,b)=>a+b,0);
     if(drift!==0){ const idx=vals.indexOf(Math.max(...vals)); vals[idx]+=drift; }
@@ -499,6 +469,7 @@
 
   // KPIs stay "—" until API populates:
   // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{ $('#kpi-credits').textContent=inv; $('#kpi-suppliers').textContent=sup; });
+
   // Login demo
   $('#loginBtn').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
 </script>
