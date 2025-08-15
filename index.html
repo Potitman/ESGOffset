@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>ESG Offset Partners – Global Marketplace for Verified ESG Credits</title>
-  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (biochar removals), renewable energy, plastic credits, and VCUs (VCS v4.4). Build a custom ESG mix, pay via escrow, receive a QR-verifiable retirement certificate."/>
+  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (biochar removals), renewable energy (reforestation, wind, solar, hydro), plastic credits, and VCUs (VCS v4.4). Build a custom ESG mix, pay via escrow, receive a QR-verifiable retirement certificate."/>
   <link rel="canonical" href="https://www.esgoffset.com/"/>
 
   <!-- Open Graph -->
@@ -30,9 +30,6 @@
   <script type="application/ld+json">
   { "@context":"https://schema.org","@type":"Organization","name":"ESG Offset Partners","url":"https://www.esgoffset.com","logo":"https://www.esgoffset.com/assets/logo.png","sameAs":[] }
   </script>
-  <script type="application/ld+json">
-  { "@context":"https://schema.org","@type":"WebSite","url":"https://www.esgoffset.com","potentialAction":{"@type":"SearchAction","target":"https://www.esgoffset.com/?q={search_term_string}","query-input":"required name=search_term_string"} }
-  </script>
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%2300a36c' d='M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z'/%3E%3C/svg%3E"/>
   <style>
@@ -44,217 +41,251 @@
 <a class="visually-hidden" href="#main">Skip to content</a>
 
 <!-- Header -->
-<header class="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur">
-  <div class="mx-auto max-w-[1200px] px-5 h-[68px] flex items-center justify-between">
+<header class="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur supports-[backdrop-filter]:bg-black/40">
+  <div class="mx-auto max-w-[1200px] px-4 sm:px-5 h-[64px] flex items-center justify-between">
     <div class="flex items-center gap-2">
+      <button id="menuBtn" class="lg:hidden -ml-1 mr-1 p-2 rounded-md border border-white/10 bg-white/5" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
       <svg class="w-7 h-7" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00a36c" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z"/></svg>
-      <span class="font-bold tracking-tight">ESG Offset Partners</span>
-      <span class="ml-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-100">Global Marketplace</span>
+      <span class="font-semibold tracking-tight">ESG Offset Partners</span>
+      <span class="hidden sm:inline-flex ml-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] sm:text-xs text-emerald-100">Global Marketplace</span>
     </div>
-    <nav class="flex items-center gap-4">
-      <a href="#catalog" class="opacity-90 hover:opacity-100">Marketplace</a>
-      <a href="#mix" class="opacity-90 hover:opacity-100">Build a Mix</a>
-      <a href="#how" class="opacity-90 hover:opacity-100">How it works</a>
-      <a href="#suppliers" class="opacity-90 hover:opacity-100">Suppliers</a>
-      <a href="#reports" class="opacity-90 hover:opacity-100">ESG Reports</a>
+    <nav class="hidden lg:flex items-center gap-4">
+      <a href="#catalog" class="opacity-90 hover:opacity-100 text-sm">Marketplace</a>
+      <a href="#mix" class="opacity-90 hover:opacity-100 text-sm">Build a Mix</a>
+      <a href="#how" class="opacity-90 hover:opacity-100 text-sm">How it works</a>
+      <a href="#suppliers" class="opacity-90 hover:opacity-100 text-sm">Suppliers</a>
+      <a href="#reports" class="opacity-90 hover:opacity-100 text-sm">ESG Reports</a>
       <div class="flex items-center gap-2">
-        <button id="loginBtn" class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft">Log in</button>
-        <a href="#cta" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft">Get started</a>
+        <button id="loginBtn" class="rounded-full border border-white/20 px-3 py-1.5 text-sm hover:shadow-soft">Log in</button>
+        <a href="#cta" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-3 py-1.5 text-sm text-brand-dark hover:shadow-soft">Get started</a>
       </div>
     </nav>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div id="drawer" class="fixed inset-0 z-50 hidden">
+    <div id="drawerBackdrop" class="absolute inset-0 bg-black/60"></div>
+    <aside class="absolute left-0 top-0 h-full w-[86%] max-w-[360px] bg-[#0c1217] border-r border-white/10 p-4 overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#00a36c" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z"/></svg>
+          <b>ESG Offset Partners</b>
+        </div>
+        <button id="menuClose" class="p-2 rounded-md border border-white/10 bg-white/5" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <nav class="mt-4 flex flex-col gap-2 text-sm">
+        <a class="rounded-md px-3 py-2 hover:bg-white/5" href="#catalog">Marketplace</a>
+        <a class="rounded-md px-3 py-2 hover:bg-white/5" href="#mix">Build a Mix</a>
+        <a class="rounded-md px-3 py-2 hover:bg-white/5" href="#how">How it works</a>
+        <a class="rounded-md px-3 py-2 hover:bg-white/5" href="#suppliers">Suppliers</a>
+        <a class="rounded-md px-3 py-2 hover:bg-white/5" href="#reports">ESG Reports</a>
+        <div class="h-px bg-white/10 my-2"></div>
+        <button id="loginBtnM" class="rounded-md border border-white/15 px-3 py-2 text-left">Log in</button>
+        <a href="#cta" class="rounded-md bg-gradient-to-tr from-brand to-brand-soft px-3 py-2 text-brand-dark">Get started</a>
+      </nav>
+    </aside>
   </div>
 </header>
 
 <main id="main">
   <!-- Hero -->
-  <section class="mx-auto max-w-[1200px] px-5 py-10">
-    <div class="grid gap-7 md:grid-cols-[1.2fr_.8fr] items-center">
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 py-8 sm:py-10">
+    <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] items-start">
       <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-100 text-sm">
           <span>✔</span><span>Verified credits • Registry retirement • White-label certificates</span>
         </div>
-        <h1 class="mt-3 text-4xl/tight font-semibold">One platform for verified ESG credits — globally.</h1>
-        <p class="mt-3 text-slate-300 text-lg">
-          Buy carbon offsets (incl. biochar removals), renewable energy (incl. reforestation, wind, solar, hydro), plastic credits, and VCUs (VCS v4.4).
-          Build a custom mix for your ESG reporting. Escrow payments. QR-verifiable retirement.
+        <h1 class="mt-3 text-3xl sm:text-4xl/tight font-semibold">One platform for verified ESG credits — globally.</h1>
+        <p class="mt-3 text-slate-300 text-base sm:text-lg leading-relaxed">
+          Buy carbon offsets (incl. biochar removals), renewable energy (reforestation, wind, solar, hydro),
+          plastic credits, and VCUs (VCS v4.4). Build a custom mix for your ESG reporting. Escrow payments.
+          QR-verifiable retirement.
         </p>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft" href="#mix">Build your ESG mix</a>
-          <a class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft" href="#catalog">Browse marketplace</a>
-          <a class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft" href="#suppliers">Sell credits</a>
+        <div class="mt-4 flex flex-wrap gap-2 sm:gap-3">
+          <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-sm sm:text-base text-brand-dark hover:shadow-soft" href="#mix">Build your ESG mix</a>
+          <a class="rounded-full border border-white/20 px-4 py-2 text-sm sm:text-base hover:shadow-soft" href="#catalog">Browse marketplace</a>
+          <a class="rounded-full border border-white/20 px-4 py-2 text-sm sm:text-base hover:shadow-soft" href="#suppliers">Sell credits</a>
         </div>
         <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">KYC/AML</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Escrow Payments</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">ICVCM & VCMI aligned (in progress)</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">ESG-ready exports</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs sm:text-sm text-slate-300">KYC/AML</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs sm:text-sm text-slate-300">Escrow Payments</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs sm:text-sm text-slate-300">ICVCM & VCMI aligned (in progress)</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs sm:text-sm text-slate-300">ESG-ready exports</span>
         </div>
 
-        <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Live inventory</div><b id="kpi-credits" class="text-lg">—</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Suppliers onboarded</div><b id="kpi-suppliers" class="text-lg">—</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Countries</div><b class="text-lg">3 → Global</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Avg. fulfilment</div><b class="text-lg">~72h</b></div>
+        <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Live inventory</div><b id="kpi-credits" class="text-base sm:text-lg">—</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Suppliers onboarded</div><b id="kpi-suppliers" class="text-base sm:text-lg">—</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Countries</div><b class="text-base sm:text-lg">3 → Global</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. fulfilment</div><b class="text-base sm:text-lg">~72h</b></div>
         </div>
       </div>
 
       <!-- Mix Calculator (4 sliders) -->
-      <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5 shadow-soft">
-        <h3 class="text-xl font-semibold">Quick ESG Mix Calculator</h3>
-        <p class="mt-1 text-xs text-slate-400">Indicative prices per tCO₂: Biochar €123, Renewable Energy €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
+      <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5 shadow-soft">
+        <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
+        <p class="mt-1 text-xs text-slate-400">Indicative price per tCO₂: Biochar €123, Renewable €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
 
         <div class="mt-3 flex items-center gap-3">
           <label for="tonnes" class="text-sm text-slate-300 w-full">tCO₂</label>
-          <input id="tonnes" type="number" min="1" step="1" value="100" class="w-40 rounded-lg border border-white/20 bg-transparent px-3 py-2"/>
+          <input id="tonnes" type="number" min="1" step="1" value="100" class="w-28 sm:w-40 rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm sm:text-base"/>
         </div>
 
         <div class="mt-3 space-y-3">
-          <div class="flex items-center gap-3">
-            <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar (123 €/t)</label>
-            <input id="pBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
+          <div>
+            <div class="flex items-center gap-3">
+              <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar <span class="text-slate-400">(123 €/t)</span></label>
+              <input id="pBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <label for="pRenew" class="text-sm text-slate-300 w-full">Renewable Energy – incl. reforestation, wind, solar, hydro (4 €/t)</label>
-            <input id="pRenew" type="range" min="0" max="100" value="50" class="w-full"/>
+          <div>
+            <div class="flex items-center gap-3">
+              <label for="pRenew" class="text-sm text-slate-300 w-full">Renewable Energy <span class="text-slate-400">(4 €/t)</span></label>
+              <input id="pRenew" type="range" min="0" max="100" value="50" class="w-full"/>
+            </div>
+            <div class="mt-1 text-[11px] text-slate-400">Includes reforestation, wind, solar, hydro and other renewables (AFOLU & energy).</div>
           </div>
-          <div class="flex items-center gap-3">
-            <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic Credits (200 €/t)</label>
-            <input id="pPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
+          <div>
+            <div class="flex items-center gap-3">
+              <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic Credits <span class="text-slate-400">(200 €/t)</span></label>
+              <input id="pPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <label for="pVCS" class="text-sm text-slate-300 w-full">VCUs – VCS v4.4 (4 €/t)</label>
-            <input id="pVCS" type="range" min="0" max="100" value="10" class="w-full"/>
+          <div>
+            <div class="flex items-center gap-3">
+              <label for="pVCS" class="text-sm text-slate-300 w-full">VCUs – VCS v4.4 <span class="text-slate-400">(4 €/t)</span></label>
+              <input id="pVCS" type="range" min="0" max="100" value="10" class="w-full"/>
+            </div>
           </div>
           <div class="text-xs text-slate-400">Total: <b id="pTotal">100%</b> — <span class="opacity-80">auto-normalized</span></div>
         </div>
 
-        <div class="mt-4 grid gap-3 md:grid-cols-3">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Avg. price / t</div><b id="avgPrice" class="text-lg" role="status" aria-live="polite">–</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Est. subtotal</div><b id="subtotal" class="text-lg" role="status" aria-live="polite">–</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="text-xs text-slate-400">Platform fee (12%)</div><b id="fee" class="text-lg" role="status" aria-live="polite">–</b></div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Platform fee (12%)</div><b id="fee" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
         </div>
 
-        <div class="mt-4 flex items-center gap-3">
-          <button id="addToCart" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft">Create RFQ & reserve</button>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs">White-label ✔</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs">Registry retirement ✔</span>
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <button id="addToCart" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-sm sm:text-base text-brand-dark hover:shadow-soft">Create RFQ & reserve</button>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] sm:text-xs">White-label ✔</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] sm:text-xs">Registry retirement ✔</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Trust -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-10">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5">
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10">
+    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
       <div class="flex flex-col gap-5 md:flex-row md:justify-between">
-        <div>
-          <h2 class="text-2xl font-semibold">Built for trust</h2>
-          <p class="mt-1 text-slate-300">
+        <div class="md:max-w-[60ch]">
+          <h2 class="text-xl sm:text-2xl font-semibold">Built for trust</h2>
+          <p class="mt-1 text-slate-300 text-sm sm:text-base">
             Each unit is retired on behalf of the buyer in a recognized registry (e.g., Verra, Gold Standard, ACR, Puro.earth). Every certificate carries a QR link to a public record.
           </p>
           <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Verra VCS</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Gold Standard</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">ACR</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Puro.earth</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">Verra VCS</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">Gold Standard</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">ACR</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">Puro.earth</span>
           </div>
-          <p class="mt-2 text-xs text-slate-400">
+          <p class="mt-2 text-[11px] sm:text-xs text-slate-400">
             We support verifiable purchases and retirements of VCUs compliant with Verified Carbon Standard (VCS v4.4). Each VCU equals 1 tCO₂e and is retired on behalf of the buyer in the Verra registry (TXID & public record included).
           </p>
         </div>
 
         <!-- Verify retirement -->
         <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:min-w-[360px]">
-          <h4 class="text-lg font-semibold">Verify a retirement</h4>
-          <label for="txid" class="text-xs text-slate-400">Registry URL / TXID</label>
-          <input id="txid" placeholder="https://registry.example/tx/…" class="mt-1 w-full rounded-lg border border-white/20 bg-transparent px-3 py-2"/>
-          <button id="verifyBtn" class="mt-2 rounded-full border border-white/20 px-4 py-2 hover:shadow-soft">Open record</button>
-          <div id="verifyMsg" class="mt-2 text-xs text-slate-400"></div>
+          <h4 class="text-base sm:text-lg font-semibold">Verify a retirement</h4>
+          <label for="txid" class="text-[11px] sm:text-xs text-slate-400">Registry URL / TXID</label>
+          <input id="txid" placeholder="https://registry.example/tx/…" class="mt-1 w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm"/>
+          <button id="verifyBtn" class="mt-2 rounded-full border border-white/20 px-4 py-2 text-sm hover:shadow-soft">Open record</button>
+          <div id="verifyMsg" class="mt-2 text-[11px] sm:text-xs text-slate-400"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured projects (4 cards) -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-10" id="catalog">
-    <h2 class="text-2xl font-semibold">Featured credits</h2>
-    <div class="mt-3 grid gap-4 md:grid-cols-4">
-
-      <!-- Biochar Removal -->
+  <!-- Featured projects -->
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10" id="catalog">
+    <h2 class="text-xl sm:text-2xl font-semibold">Featured credits</h2>
+    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Card component pattern applied for all four -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+        <img class="h-40 w-full object-cover" width="1200" height="160"
              src="./assets/biochar.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;26&quot;>Biochar Removal</text></svg>'"
-             alt="Biochar removal project (biochar applied into soil)"/>
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Biochar Removal</text></svg>'"
+             alt="Biochar removal"/>
         <div class="p-3">
-          <b>Biochar Removal • EU</b>
-          <div class="mt-1 text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
-          <div class="mt-2 flex items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Removal</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Vintage 2024</span>
+          <b class="block">Biochar Removal • EU</b>
+          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Removal</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Vintage 2024</span>
           </div>
         </div>
       </article>
 
-      <!-- Renewable Energy (incl. reforestation, wind, solar, hydro) -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+        <img class="h-40 w-full object-cover" width="1200" height="160"
              src="./assets/renewables.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>Renewable Energy</text></svg>'"
-             alt="Renewable energy projects (reforestation, wind, solar, hydro)"/>
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Renewable Energy</text></svg>'"
+             alt="Renewable energy"/>
         <div class="p-3">
-          <b>Renewable Energy • Global</b>
-          <div class="mt-1 text-xs text-slate-400">~€4 / t • Registry: Verra/GS/ACR • Methodology: Renewables & AFOLU</div>
-          <div class="mt-2 flex items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Renewables</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Various vintages</span>
+          <b class="block">Renewable Energy • Global</b>
+          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€4 / t • Registry: Verra/GS/ACR • Methodology: Renewables & AFOLU</div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Renewables</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Various vintages</span>
           </div>
         </div>
       </article>
 
-      <!-- Plastic Credits -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+        <img class="h-40 w-full object-cover" width="1200" height="160"
              src="./assets/plastic.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>Plastic Credits</text></svg>'"
-             alt="Plastic cleanup project (verified collection/recovery)"/>
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Plastic Credits</text></svg>'"
+             alt="Plastic credits"/>
         <div class="p-3">
-          <b>Plastic Credits • Global</b>
-          <div class="mt-1 text-xs text-slate-400">~€200 / t • Standard: PWRS/PCX • Verified collection/recovery</div>
-          <div class="mt-2 flex items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">Plastic</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">2024</span>
+          <b class="block">Plastic Credits • Global</b>
+          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€200 / t • Standard: PWRS/PCX • Verified collection/recovery</div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Plastic</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">2024</span>
           </div>
         </div>
       </article>
 
-      <!-- VCUs (VCS v4.4) -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img loading="lazy" decoding="async" width="1200" height="160" class="h-40 w-full object-cover"
+        <img class="h-40 w-full object-cover" width="1200" height="160"
              src="./assets/vcs.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;24&quot;>VCUs (VCS v4.4)</text></svg>'"
-             alt="Verified Carbon Units (VCS v4.4) — forest/land-use, energy, efficiency"/>
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>VCUs (VCS v4.4)</text></svg>'"
+             alt="VCUs VCS v4.4"/>
         <div class="p-3">
-          <b>Verified Carbon Units (VCUs) • Global</b>
-          <div class="mt-1 text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
-          <div class="mt-2 flex items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">VCU</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs">VCS v4.4</span>
+          <b class="block">Verified Carbon Units (VCUs) • Global</b>
+          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">VCU</span>
+            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">VCS v4.4</span>
           </div>
         </div>
       </article>
-
     </div>
-    <p class="mt-2 text-xs text-slate-400">Prices are indicative; final price depends on availability and project selection.</p>
+    <p class="mt-2 text-[11px] sm:text-xs text-slate-400">Prices are indicative; final price depends on availability and project selection.</p>
   </section>
 
   <!-- How it works -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-10" id="how">
-    <h2 class="text-2xl font-semibold">How it works</h2>
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10" id="how">
+    <h2 class="text-xl sm:text-2xl font-semibold">How it works</h2>
     <div class="mt-3 grid gap-3 md:grid-cols-4">
       <div class="rounded-xl border border-white/10 bg-white/5 p-4">
         <div class="mb-2 grid h-7 w-7 place-items-center rounded-full bg-brand text-brand-dark font-bold">1</div>
@@ -280,20 +311,20 @@
   </section>
 
   <!-- Suppliers -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-10" id="suppliers">
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10" id="suppliers">
     <div class="grid gap-6 md:grid-cols-2 items-start">
       <div>
-        <h2 class="text-2xl font-semibold">Suppliers — sell your verified credits</h2>
-        <p class="mt-1 text-slate-300">List your Verra, Gold Standard, ACR or Puro.earth units (plus plastic under PWRS/PCX). Set capacity and price ranges; we route global demand to you.</p>
+        <h2 class="text-xl sm:text-2xl font-semibold">Suppliers — sell your verified credits</h2>
+        <p class="mt-1 text-slate-300 text-sm sm:text-base">List your Verra, Gold Standard, ACR or Puro.earth units (plus plastic under PWRS/PCX). Set capacity and price ranges; we route global demand to you.</p>
         <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">White-label agreement</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">API / CSV upload</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Monthly reconcile</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-300">Payouts in EUR/USD</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">White-label agreement</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">API / CSV upload</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">Monthly reconcile</span>
+          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-300">Payouts in EUR/USD</span>
         </div>
         <div class="mt-4 flex gap-3">
-          <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft" href="#cta">Apply as supplier</a>
-          <a class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft" href="#docs">Read WL manual</a>
+          <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-sm sm:text-base text-brand-dark hover:shadow-soft" href="#cta">Apply as supplier</a>
+          <a class="rounded-full border border-white/20 px-4 py-2 text-sm sm:text-base hover:shadow-soft" href="#docs">Read WL manual</a>
         </div>
       </div>
       <div class="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -309,12 +340,12 @@
   </section>
 
   <!-- ESG Reports -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-10" id="reports">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5">
-      <h2 class="text-2xl font-semibold">ESG reporting made simple</h2>
-      <p class="mt-1 text-slate-300">Export transaction-level data for GHG Protocol scopes 1/2/3 (incl. VCUs under VCS v4.4). Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
-      <div class="mt-3 overflow-hidden rounded-xl border border-white/10">
-        <table class="w-full text-left text-sm">
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10" id="reports">
+    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
+      <h2 class="text-xl sm:text-2xl font-semibold">ESG reporting made simple</h2>
+      <p class="mt-1 text-slate-300 text-sm sm:text-base">Export transaction-level data for GHG Protocol scopes 1/2/3 (incl. VCUs under VCS v4.4). Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
+      <div class="mt-3 overflow-x-auto rounded-xl border border-white/10">
+        <table class="min-w-[640px] w-full text-left text-sm">
           <thead class="bg-white/5">
             <tr><th class="px-4 py-3">Dataset</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Format</th><th class="px-4 py-3">Action</th></tr>
           </thead>
@@ -329,15 +360,15 @@
   </section>
 
   <!-- CTA -->
-  <section class="mx-auto max-w-[1200px] px-5 pb-14" id="cta">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-5">
+  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-12 sm:pb-14" id="cta">
+    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 class="text-2xl font-semibold">Ready to offset — or to sell?</h2>
-          <p class="mt-1 text-slate-300">Join ESGOffset and access a global marketplace with escrow, KYC and registry retirement built-in.</p>
+          <h2 class="text-xl sm:text-2xl font-semibold">Ready to offset — or to sell?</h2>
+          <p class="mt-1 text-slate-300 text-sm sm:text-base">Join ESGOffset and access a global marketplace with escrow, KYC and registry retirement built-in.</p>
           <div class="mt-3 flex gap-3">
-            <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark hover:shadow-soft" href="#mix">Start offsetting</a>
-            <a class="rounded-full border border-white/20 px-4 py-2 hover:shadow-soft" href="#suppliers">Become a supplier</a>
+            <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-sm sm:text-base text-brand-dark hover:shadow-soft" href="#mix">Start offsetting</a>
+            <a class="rounded-full border border-white/20 px-4 py-2 text-sm sm:text-base hover:shadow-soft" href="#suppliers">Become a supplier</a>
           </div>
         </div>
         <div class="rounded-xl border border-white/10 bg-white/5 p-4 w-fit">
@@ -350,7 +381,7 @@
 
 <!-- Footer -->
 <footer class="border-t border-white/10 bg-[#0a0f13] py-7">
-  <div class="mx-auto max-w-[1200px] px-5 grid gap-6 md:grid-cols-4">
+  <div class="mx-auto max-w-[1200px] px-4 sm:px-5 grid gap-6 md:grid-cols-4">
     <div>
       <div class="flex items-center gap-2">
         <svg class="w-7 h-7" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00a36c" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z"/></svg>
@@ -395,15 +426,19 @@
 </div>
 
 <script>
-  // Helpers
+  // Shorthands
   const $ = s => document.querySelector(s);
-  const $$ = s => document.querySelectorAll(s);
-  const fmt = (n,curr='EUR') => new Intl.NumberFormat(undefined,{style:'currency',currency:curr,maximumFractionDigits:2}).format(n);
 
-  // Mix calculator (4 sliders)
+  // Mobile drawer
+  const drawer = $('#drawer');
+  $('#menuBtn')?.addEventListener('click', ()=> drawer.classList.remove('hidden'));
+  $('#menuClose')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
+  $('#drawerBackdrop')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
+
+  // Mix calculator
   const pricesEUR={ biochar:123, renew:4, plastic:200, vcs:4 };
-  const sliders=['pBiochar','pRenew','pPlastic','pVCS'].map(id=>$('#'+id));
-  $('#tonnes').addEventListener('input', recalc);
+  const sliders=['pBiochar','pRenew','pPlastic','pVCS'].map(id=>document.getElementById(id));
+  document.getElementById('tonnes').addEventListener('input', recalc);
   sliders.forEach(s=>s.addEventListener('input',()=>{ normalize(); recalc(); }));
 
   function normalize(){
@@ -412,26 +447,29 @@
     const drift=100-vals.reduce((a,b)=>a+b,0);
     if(drift!==0){ const idx=vals.indexOf(Math.max(...vals)); vals[idx]+=drift; }
     sliders.forEach((s,i)=>s.value=vals[i]);
-    $('#pTotal').textContent=vals.reduce((a,b)=>a+b,0)+'%';
+    document.getElementById('pTotal').textContent=vals.reduce((a,b)=>a+b,0)+'%';
   }
 
   function recalc(){
-    const t=Math.max(1, parseFloat($('#tonnes').value)||0);
-    $('#tonnes').value=t;
-    const pB=+$('#pBiochar').value/100, pR=+$('#pRenew').value/100, pP=+$('#pPlastic').value/100, pV=+$('#pVCS').value/100;
+    const t=Math.max(1, parseFloat(document.getElementById('tonnes').value)||0);
+    document.getElementById('tonnes').value=t;
+    const pB=+document.getElementById('pBiochar').value/100,
+          pR=+document.getElementById('pRenew').value/100,
+          pP=+document.getElementById('pPlastic').value/100,
+          pV=+document.getElementById('pVCS').value/100;
     const avgEUR = pB*pricesEUR.biochar + pR*pricesEUR.renew + pP*pricesEUR.plastic + pV*pricesEUR.vcs;
     const subtotalEUR = avgEUR * t;
     const feeEUR = subtotalEUR * 0.12;
-    $('#avgPrice').textContent=fmt(avgEUR,'EUR');
-    $('#subtotal').textContent=fmt(subtotalEUR,'EUR');
-    $('#fee').textContent=fmt(feeEUR,'EUR');
+    document.getElementById('avgPrice').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(avgEUR);
+    document.getElementById('subtotal').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotalEUR);
+    document.getElementById('fee').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(feeEUR);
   }
   normalize(); recalc();
 
-  // Verify retirement (safe)
-  $('#verifyBtn').addEventListener('click', ()=>{
-    const v=$('#txid').value.trim();
-    const m=$('#verifyMsg');
+  // Verify retirement
+  document.getElementById('verifyBtn').addEventListener('click', ()=>{
+    const v=document.getElementById('txid').value.trim();
+    const m=document.getElementById('verifyMsg');
     if(!v){ m.textContent='Enter a registry URL or TXID.'; m.className='mt-2 text-xs text-red-400'; return; }
     try{
       if(/^https?:\/\//i.test(v)) window.open(v,'_blank','noopener,noreferrer');
@@ -442,20 +480,21 @@
 
   // Cookie consent
   const cookieId='esg-cookie';
-  function showCookie(){ if(!localStorage.getItem(cookieId)) $('#cookie').classList.remove('hidden'); }
-  $('#cookieAccept').onclick=()=>{ localStorage.setItem(cookieId,'1'); $('#cookie').classList.add('hidden'); };
-  $('#cookieDecline').onclick=()=>{ $('#cookie').classList.add('hidden'); };
-  $('#cookiePrefs').onclick=(e)=>{ e.preventDefault(); alert('Preferences modal (analytics/marketing) – to be implemented.'); };
+  function showCookie(){ if(!localStorage.getItem(cookieId)) document.getElementById('cookie').classList.remove('hidden'); }
+  document.getElementById('cookieAccept').onclick=()=>{ localStorage.setItem(cookieId,'1'); document.getElementById('cookie').classList.add('hidden'); };
+  document.getElementById('cookieDecline').onclick=()=>{ document.getElementById('cookie').classList.add('hidden'); };
+  document.getElementById('cookiePrefs').onclick=(e)=>{ e.preventDefault(); alert('Preferences modal (analytics/marketing) – to be implemented.'); };
   showCookie();
 
   // Footer year
-  $('#yr').textContent=new Date().getFullYear();
+  document.getElementById('yr').textContent=new Date().getFullYear();
 
-  // KPIs – keep placeholders until API
-  // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{$('#kpi-credits').textContent=inv;$('#kpi-suppliers').textContent=sup;});
+  // KPIs placeholder
+  // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{ document.getElementById('kpi-credits').textContent=inv; document.getElementById('kpi-suppliers').textContent=sup; });
 
   // Login demo
-  $('#loginBtn').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
+  document.getElementById('loginBtn').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
+  document.getElementById('loginBtnM').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
 </script>
 </body>
 </html>
