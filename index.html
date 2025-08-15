@@ -19,8 +19,8 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: { brand: { DEFAULT: '#00a36c', soft: '#71d7b0', dark:'#042a1b' } },
-          boxShadow: { soft: '0 6px 30px rgba(0,0,0,.25)' }
+          colors: { brand:{DEFAULT:'#00a36c', soft:'#71d7b0', dark:'#042a1b'} },
+          boxShadow:{ soft:'0 6px 30px rgba(0,0,0,.25)'}
         }
       }
     }
@@ -125,7 +125,7 @@
         </div>
       </div>
 
-      <!-- Mix Calculator -->
+      <!-- Mix Calculator + RFQ link-share -->
       <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5 shadow-soft">
         <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
         <p class="mt-1 text-xs text-slate-400">Indicative price per tCO₂: Biochar €123, Renewable €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
@@ -162,6 +162,18 @@
           <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
           <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
           <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Platform fee (12%)</div><b id="fee" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+        </div>
+
+        <!-- RFQ link-share UI -->
+        <div class="mt-4 space-y-2">
+          <div class="text-xs text-slate-400">Shareable RFQ link (auto-updates with your selections)</div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="rfqUrl" class="flex-1 rounded-lg border border-white/20 bg-transparent px-3 py-2 text-xs sm:text-sm" readonly value="">
+            <div class="flex gap-2">
+              <button id="copyLink" class="rounded-full border border-white/20 px-3 py-2 text-xs sm:text-sm hover:shadow-soft">Copy RFQ link</button>
+              <button id="openLink" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-3 py-2 text-xs sm:text-sm text-brand-dark hover:shadow-soft">Open link</button>
+            </div>
+          </div>
         </div>
 
         <div class="mt-4 flex flex-wrap items-center gap-3">
@@ -210,10 +222,7 @@
     <h2 class="text-xl sm:text-2xl font-semibold">Featured credits</h2>
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./biochar.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Biochar Removal</text></svg>'"
-             alt="Biochar removal"/>
+        <img class="h-40 w-full object-cover" width="1200" height="160" src="./biochar.jpg" alt="Biochar removal"/>
         <div class="p-3">
           <b class="block">Biochar Removal • EU</b>
           <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
@@ -226,10 +235,7 @@
       </article>
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./renewables.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Renewable Energy</text></svg>'"
-             alt="Renewable energy"/>
+        <img class="h-40 w-full object-cover" width="1200" height="160" src="./renewables.jpg" alt="Renewable energy"/>
         <div class="p-3">
           <b class="block">Renewable Energy • Global</b>
           <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€4 / t • Registry: Verra/GS/ACR • Methodology: Renewables & AFOLU</div>
@@ -242,10 +248,7 @@
       </article>
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./plastic.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Plastic Credits</text></svg>'"
-             alt="Plastic credits"/>
+        <img class="h-40 w-full object-cover" width="1200" height="160" src="./plastic.jpg" alt="Plastic credits"/>
         <div class="p-3">
           <b class="block">Plastic Credits • Global</b>
           <div class="mt-1 text-[11px] sm:text-xs text-slate-400">~€200 / t • Standard: PWRS/PCX • Verified collection/recovery</div>
@@ -258,10 +261,7 @@
       </article>
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./vcs.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>VCUs (VCS v4.4)</text></svg>'"
-             alt="VCUs VCS v4.4"/>
+        <img class="h-40 w-full object-cover" width="1200" height="160" src="./vcs.jpg" alt="VCUs VCS v4.4"/>
         <div class="p-3">
           <b class="block">Verified Carbon Units (VCUs) • Global</b>
           <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
@@ -427,55 +427,108 @@
   $('#menuClose')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
   $('#drawerBackdrop')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
 
-  // Mix calculator
-  const pricesEUR={ biochar:123, renew:4, plastic:200, vcs:4 };
-  const sliders=['pBiochar','pRenew','pPlastic','pVCS'].map(id=>document.getElementById(id));
-  document.getElementById('tonnes').addEventListener('input', recalc);
-  sliders.forEach(s=>s.addEventListener('input',()=>{ normalize(); recalc(); }));
+  // Prices
+  const pricesEUR = { biochar:123, renew:4, plastic:200, vcs:4 };
+  const sliders = ['pBiochar','pRenew','pPlastic','pVCS'].map(id=>document.getElementById(id));
+
+  // URL <-> state helpers
+  function stateToParams(){
+    const params = new URLSearchParams({
+      t: document.getElementById('tonnes').value,
+      b: document.getElementById('pBiochar').value,
+      r: document.getElementById('pRenew').value,
+      p: document.getElementById('pPlastic').value,
+      v: document.getElementById('pVCS').value
+    });
+    // zachovaj partner tracking ak je v URL
+    const existing = getParamsFromPage();
+    if(existing.get('src')) params.set('src', existing.get('src'));
+    return params;
+  }
+  function paramsToState(sp){
+    const get = k => sp.get(k);
+    if(get('t')) document.getElementById('tonnes').value = Math.max(1, parseInt(get('t')));
+    if(get('b')) document.getElementById('pBiochar').value = clamp(get('b'));
+    if(get('r')) document.getElementById('pRenew').value   = clamp(get('r'));
+    if(get('p')) document.getElementById('pPlastic').value = clamp(get('p'));
+    if(get('v')) document.getElementById('pVCS').value     = clamp(get('v'));
+    normalize(); recalc(); updateShareUrl();
+  }
+  function clamp(v){ v=Number(v); if(isNaN(v)) return 0; return Math.min(100, Math.max(0, Math.round(v))); }
+
+  // Normalization + calc
+  document.getElementById('tonnes').addEventListener('input', ()=>{ recalc(); updateShareUrl(); });
+  sliders.forEach(s=>s.addEventListener('input', ()=>{ normalize(); recalc(); updateShareUrl(); }));
 
   function normalize(){
-    let vals=sliders.map(s=>+s.value), sum=vals.reduce((a,b)=>a+b,0)||1;
-    vals=vals.map(v=>Math.round(v*100/sum));
-    const drift=100-vals.reduce((a,b)=>a+b,0);
-    if(drift!==0){ const idx=vals.indexOf(Math.max(...vals)); vals[idx]+=drift; }
-    sliders.forEach((s,i)=>s.value=vals[i]);
-    document.getElementById('pTotal').textContent=vals.reduce((a,b)=>a+b,0)+'%';
+    let vals = sliders.map(s=>+s.value), sum = vals.reduce((a,b)=>a+b,0)||1;
+    vals = vals.map(v=>Math.round(v*100/sum));
+    const drift = 100 - vals.reduce((a,b)=>a+b,0);
+    if(drift!==0){ const i = vals.indexOf(Math.max(...vals)); vals[i]+=drift; }
+    $('#pTotal').textContent = vals.reduce((a,b)=>a+b,0)+'%';
+    sliders.forEach((s,i)=>s.value = vals[i]);
   }
 
   function recalc(){
-    const t=Math.max(1, parseFloat(document.getElementById('tonnes').value)||0);
-    document.getElementById('tonnes').value=t;
-    const pB=+document.getElementById('pBiochar').value/100,
-          pR=+document.getElementById('pRenew').value/100,
-          pP=+document.getElementById('pPlastic').value/100,
-          pV=+document.getElementById('pVCS').value/100;
+    const t = Math.max(1, parseFloat($('#tonnes').value)||0);
+    $('#tonnes').value = t;
+    const pB=+$('#pBiochar').value/100, pR=+$('#pRenew').value/100, pP=+$('#pPlastic').value/100, pV=+$('#pVCS').value/100;
     const avgEUR = pB*pricesEUR.biochar + pR*pricesEUR.renew + pP*pricesEUR.plastic + pV*pricesEUR.vcs;
     const subtotalEUR = avgEUR * t;
     const feeEUR = subtotalEUR * 0.12;
-    document.getElementById('avgPrice').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(avgEUR);
-    document.getElementById('subtotal').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotalEUR);
-    document.getElementById('fee').textContent=new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(feeEUR);
+    $('#avgPrice').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(avgEUR);
+    $('#subtotal').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotalEUR);
+    $('#fee').textContent      = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(feeEUR);
   }
-  normalize(); recalc();
+
+  // RFQ link-share
+  const rfqInput = $('#rfqUrl');
+  function getParamsFromPage(){
+    // parametre môžu byť buď za hash (#mix?...) alebo v query (? ...)
+    if(location.hash && location.hash.includes('?')){
+      return new URLSearchParams(location.hash.split('?')[1]);
+    }
+    return new URLSearchParams(location.search);
+  }
+  function updateShareUrl(){
+    const base = location.origin + location.pathname + '#mix';
+    const q = stateToParams().toString();
+    rfqInput.value = `${base}?${q}`;
+  }
+  $('#copyLink').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(rfqInput.value);
+      alert('RFQ link copied to clipboard.');
+    }catch(e){
+      rfqInput.select(); document.execCommand('copy');
+      alert('RFQ link copied.');
+    }
+  });
+  $('#openLink').addEventListener('click', ()=>{ window.open(rfqInput.value,'_blank','noopener,noreferrer'); });
+
+  // Deep-link on load
+  (function initFromUrl(){
+    const sp = getParamsFromPage();
+    if([...sp.keys()].length){ paramsToState(sp); }
+    else { normalize(); recalc(); updateShareUrl(); }
+  })();
 
   // Verify retirement
-  document.getElementById('verifyBtn').addEventListener('click', ()=>{
-    const v=document.getElementById('txid').value.trim();
-    const m=document.getElementById('verifyMsg');
+  $('#verifyBtn').addEventListener('click', ()=>{
+    const v=$('#txid').value.trim(); const m=$('#verifyMsg');
     if(!v){ m.textContent='Enter a registry URL or TXID.'; m.className='mt-2 text-xs text-red-400'; return; }
     try{
       if(/^https?:\/\//i.test(v)) window.open(v,'_blank','noopener,noreferrer');
-      else m.innerHTML=`Search your registry for TXID: <b>${v}</b>`;
-      m.className='mt-2 text-xs text-emerald-400';
+      else { m.innerHTML=`Search your registry for TXID: <b>${v}</b>`; m.className='mt-2 text-xs text-emerald-400'; }
     }catch(e){ m.textContent='Unable to open. Copy & paste into registry.'; m.className='mt-2 text-xs text-red-400';}
   });
 
   // Cookie consent
   const cookieId='esg-cookie';
-  function showCookie(){ if(!localStorage.getItem(cookieId)) document.getElementById('cookie').classList.remove('hidden'); }
-  document.getElementById('cookieAccept').onclick=()=>{ localStorage.setItem(cookieId,'1'); document.getElementById('cookie').classList.add('hidden'); };
-  document.getElementById('cookieDecline').onclick=()=>{ document.getElementById('cookie').classList.add('hidden'); };
-  document.getElementById('cookiePrefs').onclick=(e)=>{ e.preventDefault(); alert('Preferences modal (analytics/marketing) – to be implemented.'); };
+  function showCookie(){ if(!localStorage.getItem(cookieId)) $('#cookie').classList.remove('hidden'); }
+  $('#cookieAccept').onclick=()=>{ localStorage.setItem(cookieId,'1'); $('#cookie').classList.add('hidden'); };
+  $('#cookieDecline').onclick=()=>{ $('#cookie').classList.add('hidden'); };
+  $('#cookiePrefs').onclick=(e)=>{ e.preventDefault(); alert('Preferences modal (analytics/marketing) – to be implemented.'); };
   showCookie();
 
   // Footer year
