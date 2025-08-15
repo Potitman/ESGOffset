@@ -1,34 +1,66 @@
-name: Compress Images
+name: Compress images (in-place + webp)
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
-      - '**/*.png'
-      - '**/*.jpg'
-      - '**/*.jpeg'
+      - "**/*.jpg"
+      - "**/*.jpeg"
+      - "**/*.png"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "**/*.jpg"
+      - "**/*.jpeg"
+      - "**/*.png"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   compress:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install imagemin-cli
-        run: npm install -g imagemin-cli imagemin-mozjpeg imagemin-pngquant
-
-      - name: Compress images
+      - name: Install tools
         run: |
-          mkdir -p compressed
-          find . -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) \
-          -exec imagemin {} --plugin=mozjpeg --plugin=pngquant > compressed/{} \;
+          sudo apt-get update
+          sudo apt-get install -y imagemagick pngquant webp
 
-      - name: Move compressed images back
-        run: rsync -a --remove-source-files compressed/ ./
+      - name: Optimize JPG/JPEG in place
+        shell: bash
+        run: |
+          shopt -s globstar nullglob nocaseglob
+          files=(**/*.jpg **/*.jpeg)
+          if ((${#files[@]})); then
+            mogrify -auto-orient -strip -resize '1920x1920>' -quality 85 "${files[@]}"
+          else
+            echo "No JPG/JPEG files found."
+          fi
 
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Optimize PNG in place
+        shell: bash
+        run: |
+          shopt -s globstar nullglob nocaseglob
+          for f in **/*.png; do
+            [ -f "$f" ] || continue
+            pngquant --force --skip-if-larger --quality=65-85 --ext .png "$f"
+          done
+
+      - name: Create WebP copies
+        shell: bash
+        run: |
+          shopt -s globstar nullglob nocaseglob
+          for f in **/*.jpg **/*.jpeg **/*.png; do
+            [ -f "$f" ] || continue
+            cwebp -quiet -q 80 "$f" -o "${f%.*}.webp"
+          done
+
+      - name: Commit optimized images
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Optimized images"
+          commit_message: "chore: optimize images (in-place + webp)"
+          file_pattern: "**/*.{jpg,jpeg,png,webp}"
