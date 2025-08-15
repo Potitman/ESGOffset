@@ -125,7 +125,7 @@
         </div>
       </div>
 
-      <!-- Mix Calculator (4 sliders) -->
+      <!-- Mix Calculator -->
       <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5 shadow-soft">
         <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
         <p class="mt-1 text-xs text-slate-400">Indicative price per tCO₂: Biochar €123, Renewable €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
@@ -136,11 +136,9 @@
         </div>
 
         <div class="mt-3 space-y-3">
-          <div>
-            <div class="flex items-center gap-3">
-              <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar <span class="text-slate-400">(123 €/t)</span></label>
-              <input id="pBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
-            </div>
+          <div class="flex items-center gap-3">
+            <label for="pBiochar" class="text-sm text-slate-300 w-full">Biochar <span class="text-slate-400">(123 €/t)</span></label>
+            <input id="pBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
           </div>
           <div>
             <div class="flex items-center gap-3">
@@ -149,17 +147,13 @@
             </div>
             <div class="mt-1 text-[11px] text-slate-400">Includes reforestation, wind, solar, hydro and other renewables (AFOLU & energy).</div>
           </div>
-          <div>
-            <div class="flex items-center gap-3">
-              <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic Credits <span class="text-slate-400">(200 €/t)</span></label>
-              <input id="pPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
-            </div>
+          <div class="flex items-center gap-3">
+            <label for="pPlastic" class="text-sm text-slate-300 w-full">Plastic Credits <span class="text-slate-400">(200 €/t)</span></label>
+            <input id="pPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
           </div>
-          <div>
-            <div class="flex items-center gap-3">
-              <label for="pVCS" class="text-sm text-slate-300 w-full">VCUs – VCS v4.4 <span class="text-slate-400">(4 €/t)</span></label>
-              <input id="pVCS" type="range" min="0" max="100" value="10" class="w-full"/>
-            </div>
+          <div class="flex items-center gap-3">
+            <label for="pVCS" class="text-sm text-slate-300 w-full">VCUs – VCS v4.4 <span class="text-slate-400">(4 €/t)</span></label>
+            <input id="pVCS" type="range" min="0" max="100" value="10" class="w-full"/>
           </div>
           <div class="text-xs text-slate-400">Total: <b id="pTotal">100%</b> — <span class="opacity-80">auto-normalized</span></div>
         </div>
@@ -215,11 +209,10 @@
   <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8 sm:pb-10" id="catalog">
     <h2 class="text-xl sm:text-2xl font-semibold">Featured credits</h2>
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <!-- Card component pattern applied for all four -->
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./assets/biochar.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Biochar Removal</text></svg>'"
+             src="./biochar.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Biochar Removal</text></svg>'"
              alt="Biochar removal"/>
         <div class="p-3">
           <b class="block">Biochar Removal • EU</b>
@@ -234,8 +227,8 @@
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./assets/renewables.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Renewable Energy</text></svg>'"
+             src="./renewables.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%230b1116&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Renewable Energy</text></svg>'"
              alt="Renewable energy"/>
         <div class="p-3">
           <b class="block">Renewable Energy • Global</b>
@@ -250,8 +243,8 @@
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./assets/plastic.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Plastic Credits</text></svg>'"
+             src="./plastic.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%23716eff&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>Plastic Credits</text></svg>'"
              alt="Plastic credits"/>
         <div class="p-3">
           <b class="block">Plastic Credits • Global</b>
@@ -266,8 +259,8 @@
 
       <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <img class="h-40 w-full object-cover" width="1200" height="160"
-             src="./assets/vcs.jpg"
-             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%&quot; y=&quot;55%&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>VCUs (VCS v4.4)</text></svg>'"
+             src="./vcs.jpg"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<?xml version=&quot;1.0&quot;?><svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;1200&quot; height=&quot;160&quot;><defs><linearGradient id=&quot;g&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;><stop offset=&quot;0%25&quot; stop-color=&quot;%2300a36c&quot;/><stop offset=&quot;100%25&quot; stop-color=&quot;%23101820&quot;/></linearGradient></defs><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23g)&quot;/><text x=&quot;50%25&quot; y=&quot;55%25&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot; font-family=&quot;Arial&quot; font-size=&quot;22&quot;>VCUs (VCS v4.4)</text></svg>'"
              alt="VCUs VCS v4.4"/>
         <div class="p-3">
           <b class="block">Verified Carbon Units (VCUs) • Global</b>
@@ -426,7 +419,6 @@
 </div>
 
 <script>
-  // Shorthands
   const $ = s => document.querySelector(s);
 
   // Mobile drawer
@@ -488,9 +480,6 @@
 
   // Footer year
   document.getElementById('yr').textContent=new Date().getFullYear();
-
-  // KPIs placeholder
-  // fetch('/api/kpis').then(r=>r.json()).then(({inv,sup})=>{ document.getElementById('kpi-credits').textContent=inv; document.getElementById('kpi-suppliers').textContent=sup; });
 
   // Login demo
   document.getElementById('loginBtn').addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
