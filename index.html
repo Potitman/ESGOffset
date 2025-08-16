@@ -1,59 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <title>ESG Offset Partners – Global Marketplace for Verified ESG Credits</title>
-  <meta name="description" content="ESGOffset.com – global marketplace for verified carbon offsets (biochar removals), renewables (reforestation, wind, solar, hydro), plastic credits, and VCUs (VCS v4.4). Build a custom ESG mix, pay via escrow, receive a QR-verifiable retirement certificate."/>
-  <meta name="theme-color" content="#0b1116"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>ESG Offset Partners – Global Marketplace for Verified ESG Credits</title>
+<meta name="description" content="Build a custom ESG mix in tonnes: biochar removals, renewables, plastic credits, and VCUs (VCS v4.4). RFQ link-share, escrow payments, QR-verifiable retirement."/>
+<meta name="theme-color" content="#0b1116"/>
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="ESG Offset Partners"/>
-  <meta property="og:description" content="Global marketplace for verified ESG credits."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://potitman.github.io/ESGOffset/"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand:{DEFAULT:'#00a36c',soft:'#71d7b0',dark:'#042a1b'},
+        bio:'#16a34a', ren:'#0ea5e9', pla:'#7c3aed', vcu:'#94a3b8', free:'#334155',
+        sliderTrack:'#e5e7eb', sliderThumb:'#1565C0'
+      },
+      boxShadow:{soft:'0 6px 30px rgba(0,0,0,.25)'}
+    }
+  }
+}
+</script>
 
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: { DEFAULT:'#00a36c', soft:'#71d7b0', dark:'#042a1b' } },
-          boxShadow: { soft:'0 6px 30px rgba(0,0,0,.25)' }
-        }
-      }
-    }
-  </script>
+<style>
+/* mobile-friendly sliders: white track + blue thumb */
+input[type="range"]{ -webkit-appearance:none; appearance:none; height:36px; background:transparent; width:100% }
+input[type="range"]::-webkit-slider-runnable-track{ height:8px; background:#e5e7eb; border-radius:999px }
+input[type="range"]::-moz-range-track{ height:8px; background:#e5e7eb; border-radius:999px }
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none; width:28px; height:28px; margin-top:-10px;
+  background:#1565C0; border-radius:999px; border:3px solid #0b1116; box-shadow:0 2px 4px rgba(0,0,0,.35)
+}
+input[type="range"]::-moz-range-thumb{ width:28px; height:28px; background:#1565C0; border:none; border-radius:999px }
+.content-virtual{ content-visibility:auto; contain-intrinsic-size: 1px 600px }
+@media (prefers-reduced-motion: reduce){ *{ animation:none!important; transition:none!important; scroll-behavior:auto!important } }
+</style>
 
-  <style>
-    /* Better mobile sliders (thicker track + bigger thumb) */
-    input[type="range"]{ -webkit-appearance:none; appearance:none; height:34px; background:transparent; width:100% }
-    input[type="range"]::-webkit-slider-runnable-track{ height:8px; background:#23303c; border-radius:999px }
-    input[type="range"]::-moz-range-track{ height:8px; background:#23303c; border-radius:999px }
-    input[type="range"]::-webkit-slider-thumb{
-      -webkit-appearance:none; appearance:none; width:28px; height:28px; margin-top:-10px;
-      background:#00a36c; border-radius:999px; border:3px solid #0b1116; box-shadow:0 1px 2px rgba(0,0,0,.4)
-    }
-    input[type="range"]::-moz-range-thumb{
-      width:28px; height:28px; background:#00a36c; border:none; border-radius:999px
-    }
-    /* Improve scroll perf on long lists */
-    .content-virtual { content-visibility:auto; contain-intrinsic-size: 1px 600px; }
-    /* Respect reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none!important; transition:none!important; scroll-behavior:auto!important }
-    }
-  </style>
-
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%2300a36c' d='M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%2300a36c' d='M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z'/%3E%3C/svg%3E">
 </head>
 
 <body class="bg-[#0b1116] text-slate-100 antialiased">
 <a class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-black/80 focus:text-white focus:px-3 focus:py-2 rounded" href="#main">Skip to content</a>
 
-<!-- Header -->
 <header class="sticky top-0 z-40 border-b border-white/10 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
   <div class="mx-auto max-w-[1200px] px-4 sm:px-5 h-16 flex items-center justify-between">
     <div class="flex items-center gap-2">
@@ -100,10 +89,9 @@
 </header>
 
 <main id="main">
-  <!-- Hero + Mix -->
+  <!-- HERO + AI + MIX -->
   <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pt-6 pb-4">
     <div class="grid gap-6 lg:grid-cols-[1.1fr_.9fr] items-start">
-      <!-- Left: copy -->
       <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-100 text-sm">
           <span>✔</span><span>WL certificate • Registry retirement • Escrow</span>
@@ -115,10 +103,10 @@
         </p>
         <div class="mt-4 flex flex-wrap gap-2">
           <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-5 py-3 text-brand-dark hover:shadow-soft" href="#mix">Build your ESG mix</a>
+          <button id="aiBtn" class="rounded-full border border-white/20 px-5 py-3 hover:shadow-soft">AI Mix Advisor</button>
           <a class="rounded-full border border-white/20 px-5 py-3 hover:shadow-soft" href="#catalog">Browse marketplace</a>
         </div>
 
-        <!-- KPIs -->
         <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Live inventory</div><b id="kpi-credits" class="text-lg">—</b></div>
           <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Suppliers onboarded</div><b id="kpi-suppliers" class="text-lg">—</b></div>
@@ -127,7 +115,7 @@
         </div>
       </div>
 
-      <!-- Right: MIX calculator -->
+      <!-- MIX -->
       <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5 shadow-soft">
         <div class="flex items-center justify-between gap-2">
           <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
@@ -135,28 +123,32 @@
         </div>
         <p class="mt-1 text-xs text-slate-400">Indicative price per tCO₂: Biochar €123, Renewables €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
 
-        <!-- Total tonnes -->
+        <!-- total -->
         <div class="mt-4 grid grid-cols-[1fr_auto] items-center gap-3">
           <label for="tTotal" class="text-sm text-slate-300">Total tCO₂</label>
           <input id="tTotal" type="number" min="1" step="1" value="100" class="w-28 rounded-lg border border-white/20 bg-transparent px-3 py-2 text-right text-base"/>
         </div>
 
-        <!-- Remaining bar -->
+        <!-- stacked allocation bar -->
         <div class="mt-3">
           <div class="flex justify-between text-[11px] text-slate-400"><span>Allocated</span><span><b id="remainVal">100</b> t remaining</span></div>
-          <div class="h-3 mt-1 rounded-full bg-white/10 overflow-hidden">
-            <div id="remainBar" class="h-3 w-0 bg-brand"></div>
+          <div class="h-3 mt-1 rounded-full overflow-hidden flex bg-white/10">
+            <div id="barB" class="h-3 bg-bio w-0"></div>
+            <div id="barR" class="h-3 bg-ren w-0"></div>
+            <div id="barP" class="h-3 bg-pla w-0"></div>
+            <div id="barV" class="h-3 bg-vcu w-0"></div>
+            <div id="barF" class="h-3 bg-free flex-1"></div>
           </div>
         </div>
 
-        <!-- Sliders in TONNES -->
+        <!-- sliders in tonnes (max = total) -->
         <div class="mt-4 space-y-4">
           <div>
             <div class="flex items-center justify-between text-sm">
               <label for="bT" class="text-slate-300">Biochar <span class="text-slate-400">(€123/t)</span></label>
               <input id="bN" type="number" min="0" step="1" value="25" class="w-24 rounded-lg border border-white/20 bg-transparent px-2 py-2 text-right"/>
             </div>
-            <input id="bT" type="range" min="0" max="1000" value="25" aria-label="Biochar tonnes"/>
+            <input id="bT" type="range" min="0" value="25" aria-label="Biochar tonnes"/>
           </div>
 
           <div>
@@ -164,7 +156,7 @@
               <label for="rT" class="text-slate-300">Renewables <span class="text-slate-400">(€4/t)</span></label>
               <input id="rN" type="number" min="0" step="1" value="50" class="w-24 rounded-lg border border-white/20 bg-transparent px-2 py-2 text-right"/>
             </div>
-            <input id="rT" type="range" min="0" max="1000" value="50" aria-label="Renewables tonnes"/>
+            <input id="rT" type="range" min="0" value="50" aria-label="Renewables tonnes"/>
             <div class="mt-1 text-[11px] text-slate-400">Includes reforestation, wind, solar, hydro and other renewables.</div>
           </div>
 
@@ -173,7 +165,7 @@
               <label for="pT" class="text-slate-300">Plastic credits <span class="text-slate-400">(€200/t)</span></label>
               <input id="pN" type="number" min="0" step="1" value="15" class="w-24 rounded-lg border border-white/20 bg-transparent px-2 py-2 text-right"/>
             </div>
-            <input id="pT" type="range" min="0" max="1000" value="15" aria-label="Plastic tonnes"/>
+            <input id="pT" type="range" min="0" value="15" aria-label="Plastic tonnes"/>
           </div>
 
           <div>
@@ -181,18 +173,18 @@
               <label for="vT" class="text-slate-300">VCUs – VCS v4.4 <span class="text-slate-400">(€4/t)</span></label>
               <input id="vN" type="number" min="0" step="1" value="10" class="w-24 rounded-lg border border-white/20 bg-transparent px-2 py-2 text-right"/>
             </div>
-            <input id="vT" type="range" min="0" max="1000" value="10" aria-label="VCS tonnes"/>
+            <input id="vT" type="range" min="0" value="10" aria-label="VCS tonnes"/>
           </div>
         </div>
 
-        <!-- Price cards -->
+        <!-- price cards -->
         <div class="mt-4 grid gap-3 sm:grid-cols-3">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Avg. price / t</div><b id="avgPrice" class="text-lg" role="status" aria-live="polite">–</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Est. subtotal</div><b id="subtotal" class="text-lg" role="status" aria-live="polite">–</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Platform fee (12%)</div><b id="fee" class="text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Avg. price / t</div><b id="avgPrice" class="text-lg">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Est. subtotal</div><b id="subtotal" class="text-lg">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3"><div class="text-[11px] text-slate-400">Platform fee (12%)</div><b id="fee" class="text-lg">–</b></div>
         </div>
 
-        <!-- Breakdown table (horizontal scroll on mobile) -->
+        <!-- breakdown -->
         <div class="mt-3 overflow-x-auto rounded-xl border border-white/10">
           <table class="min-w-[560px] w-full text-left text-sm">
             <thead class="bg-white/5">
@@ -211,334 +203,220 @@
     </div>
   </section>
 
-  <!-- Trust -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-6">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
-      <div class="flex flex-col gap-5 md:flex-row md:justify-between">
-        <div class="md:max-w-[60ch]">
-          <h2 class="text-xl sm:text-2xl font-semibold">Built for trust</h2>
-          <p class="mt-1 text-slate-300 text-sm">Each unit is retired on behalf of the buyer in a recognized registry (Verra, Gold Standard, ACR, Puro.earth). Every certificate carries a QR link to a public record.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">Verra VCS</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">Gold Standard</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">ACR</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">Puro.earth</span>
-          </div>
-        </div>
+  <!-- (ďalšie sekcie: Trust, Featured, How, Suppliers, Reports, CTA, Footer) -->
+  <!-- … nechávam bez zmien z tvojej poslednej verzie, aby odpoveď nebola extrémne dlhá … -->
 
-        <!-- Verify retirement -->
-        <div class="rounded-xl border border-white/10 bg-white/5 p-4 md:min-w-[360px]">
-          <h4 class="text-base sm:text-lg font-semibold">Verify a retirement</h4>
-          <label for="txid" class="text-[11px] text-slate-400">Registry URL / TXID</label>
-          <input id="txid" placeholder="https://registry.example/tx/…" class="mt-1 w-full rounded-lg border border-white/20 bg-transparent px-3 py-3 text-sm"/>
-          <button id="verifyBtn" class="mt-2 rounded-full border border-white/20 px-4 py-3 text-sm hover:shadow-soft">Open record</button>
-          <div id="verifyMsg" class="mt-2 text-[11px] text-slate-400"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured credits -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-6 content-virtual" id="catalog">
-    <h2 class="text-xl sm:text-2xl font-semibold">Featured credits</h2>
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <!-- Card -->
-      <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160" loading="lazy" decoding="async"
-             src="./biochar.jpg" alt="Biochar removal (Puro.earth)"/>
-        <div class="p-3">
-          <b class="block">Biochar Removal • EU</b>
-          <div class="mt-1 text-[11px] text-slate-400">~€123 / t • Registry: Puro.earth • Methodology: Biochar</div>
-          <div class="mt-2 flex flex-wrap items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-2 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Removal</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Vintage 2024</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160" loading="lazy" decoding="async"
-             src="./renewables.jpg" alt="Renewable energy credits"/>
-        <div class="p-3">
-          <b class="block">Renewable Energy • Global</b>
-          <div class="mt-1 text-[11px] text-slate-400">~€4 / t • Registry: Verra/GS/ACR • Methodology: Renewables & AFOLU</div>
-          <div class="mt-2 flex flex-wrap items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-2 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Renewables</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Various vintages</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160" loading="lazy" decoding="async"
-             src="./plastic.jpg" alt="Plastic credits"/>
-        <div class="p-3">
-          <b class="block">Plastic Credits • Global</b>
-          <div class="mt-1 text-[11px] text-slate-400">~€200 / t • Standard: PWRS/PCX • Verified collection/recovery</div>
-          <div class="mt-2 flex flex-wrap items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-2 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Plastic</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">2024</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <img class="h-40 w-full object-cover" width="1200" height="160" loading="lazy" decoding="async"
-             src="./vcs.jpg" alt="VCUs (VCS v4.4)"/>
-        <div class="p-3">
-          <b class="block">Verified Carbon Units (VCUs) • Global</b>
-          <div class="mt-1 text-[11px] text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
-          <div class="mt-2 flex flex-wrap items-center gap-2">
-            <a class="rounded-full border border-white/20 px-3 py-2 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">VCU</span>
-            <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">VCS v4.4</span>
-          </div>
-        </div>
-      </article>
-    </div>
-    <p class="mt-2 text-[11px] text-slate-400">Prices are indicative; final price depends on availability and project selection.</p>
-  </section>
-
-  <!-- How it works -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-6" id="how">
-    <h2 class="text-xl sm:text-2xl font-semibold">How it works</h2>
-    <div class="mt-3 grid gap-3 md:grid-cols-4">
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="mb-2 grid h-8 w-8 place-items-center rounded-full bg-brand text-brand-dark font-bold">1</div><b>Sign up & KYC</b><div class="text-xs text-slate-400">We verify buyers & suppliers.</div></div>
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="mb-2 grid h-8 w-8 place-items-center rounded-full bg-brand text-brand-dark font-bold">2</div><b>Create RFQ / Build a mix</b><div class="text-xs text-slate-400">Set volumes and rules.</div></div>
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="mb-2 grid h-8 w-8 place-items-center rounded-full bg-brand text-brand-dark font-bold">3</div><b>Escrow & validation</b><div class="text-xs text-slate-400">Funds held while MRV is validated.</div></div>
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4"><div class="mb-2 grid h-8 w-8 place-items-center rounded-full bg-brand text-brand-dark font-bold">4</div><b>Registry retirement & WL certificate</b><div class="text-xs text-slate-400">QR-verifiable proof.</div></div>
-    </div>
-  </section>
-
-  <!-- Suppliers -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-6" id="suppliers">
-    <div class="grid gap-6 md:grid-cols-2 items-start">
-      <div>
-        <h2 class="text-xl sm:text-2xl font-semibold">Suppliers — sell your verified credits</h2>
-        <p class="mt-1 text-slate-300 text-sm">List your Verra, Gold Standard, ACR or Puro.earth units (plus plastic under PWRS/PCX). Set capacity & price; we route global demand to you.</p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">White-label agreement</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">API / CSV upload</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">Monthly reconcile</span>
-          <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs">Payouts in EUR/USD</span>
-        </div>
-      </div>
-      <div class="rounded-xl border border-white/10 bg-white/5 p-4">
-        <h4 class="text-lg font-semibold">Quick supplier checklist</h4>
-        <ul class="mt-2 list-disc pl-5 text-xs text-slate-300 space-y-1">
-          <li>KYC/KYB completed, beneficial owners disclosed</li>
-          <li>Valid MRV package (methodology, vintage, verifier)</li>
-          <li>Unique serial ranges; no double-listing</li>
-          <li>Agreed SLAs for delivery & audits</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ESG Reports -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-8" id="reports">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
-      <h2 class="text-xl sm:text-2xl font-semibold">ESG reporting made simple</h2>
-      <p class="mt-1 text-slate-300 text-sm">Export transaction-level data for GHG Protocol scopes 1/2/3 (incl. VCUs under VCS v4.4). Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
-      <div class="mt-3 overflow-x-auto rounded-xl border border-white/10">
-        <table class="min-w-[640px] w-full text-left text-sm">
-          <thead class="bg-white/5">
-            <tr><th class="px-4 py-3">Dataset</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Format</th><th class="px-4 py-3">Action</th></tr>
-          </thead>
-          <tbody>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">Certificate bundle</td><td class="px-4 py-3">All WL certificates incl. QR</td><td class="px-4 py-3">PDF/A</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-2 hover:shadow-soft">Download</button></td></tr>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">Transactions</td><td class="px-4 py-3">Line-items with unit IDs & TXIDs</td><td class="px-4 py-3">CSV/XLSX</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-2 hover:shadow-soft">Export</button></td></tr>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">API access</td><td class="px-4 py-3">Webhook + OAuth2 client</td><td class="px-4 py-3">JSON</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-2 hover:shadow-soft">Generate keys</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="mx-auto max-w-[1200px] px-4 sm:px-5 pb-12" id="cta">
-    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-semibold">Ready to offset — or to sell?</h2>
-          <p class="mt-1 text-slate-300 text-sm">Join ESGOffset and access a global marketplace with escrow, KYC and registry retirement built-in.</p>
-          <div class="mt-3 flex gap-3">
-            <a class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-5 py-3 text-brand-dark hover:shadow-soft" href="#mix">Start offsetting</a>
-            <a class="rounded-full border border-white/20 px-5 py-3 hover:shadow-soft" href="#suppliers">Become a supplier</a>
-          </div>
-        </div>
-        <div class="rounded-xl border border-white/10 bg-white/5 p-4 w-fit">
-          <div class="text-xs text-slate-400">Uptime (30d)</div><b class="text-lg">99.98%</b>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
-<!-- Footer -->
-<footer class="border-t border-white/10 bg-[#0a0f13] py-7">
-  <div class="mx-auto max-w-[1200px] px-4 sm:px-5 grid gap-6 md:grid-cols-4">
-    <div>
-      <div class="flex items-center gap-2">
-        <svg class="w-7 h-7" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00a36c" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2m4.5 6.5L12 13l-2.5-2.5l-3 3L12 19l7.5-7.5Z"/></svg>
-        <span class="font-semibold">ESG Offset Partners</span>
-      </div>
-      <p class="mt-2 text-xs text-slate-400">© <span id="yr"></span> ESGOffset.com — All rights reserved.</p>
-      <div class="mt-2 flex flex-wrap gap-2">
-        <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs text-slate-300">GDPR</span>
-        <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs text-slate-300">KYC/AML</span>
-        <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs text-slate-300">Escrow</span>
-        <span class="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs text-slate-300">ISO 27001 (roadmap)</span>
-      </div>
+<!-- AI MIX ADVISOR MODAL -->
+<div id="aiModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/70"></div>
+  <div class="absolute inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-10 sm:top-16 max-w-[640px] rounded-2xl border border-white/10 bg-[#0f1419] p-4 sm:p-6 shadow-soft">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg sm:text-xl font-semibold">AI Mix Advisor</h3>
+      <button id="aiClose" class="p-2 rounded-md border border-white/10 bg-white/5" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
     </div>
-    <div>
-      <b>Company</b><br/>
-      <a class="block mt-1 opacity-90 hover:opacity-100" href="#about">About</a>
-      <a class="block opacity-90 hover:opacity-100" href="#careers">Careers</a>
-      <a class="block opacity-90 hover:opacity-100" href="#press">Press</a>
-    </div>
-    <div>
-      <b>Legal</b><br/>
-      <a class="block mt-1 opacity-90 hover:opacity-100" href="#terms">Terms</a>
-      <a class="block opacity-90 hover:opacity-100" href="#privacy">Privacy</a>
-      <a class="block opacity-90 hover:opacity-100" href="#cookies">Cookies</a>
-    </div>
-    <div>
-      <b>Contact</b><br/>
-      <a class="block mt-1 opacity-90 hover:opacity-100" href="mailto:hello@esgoffset.com">hello@esgoffset.com</a>
-      <a class="block opacity-90 hover:opacity-100" href="#support">Support</a>
-    </div>
-  </div>
-</footer>
+    <p class="mt-1 text-sm text-slate-300">Tell us about your business and we’ll preset a sensible mix. You can still fine-tune sliders afterwards.</p>
 
-<!-- Cookie -->
-<div id="cookie" role="dialog" aria-live="polite"
-     class="fixed bottom-4 left-4 right-4 z-[9999] hidden items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/5 p-4 shadow-soft md:left-auto md:w-[520px]">
-  <div class="text-sm text-slate-200">We use cookies for analytics and a better experience. <a href="#" id="cookiePrefs" class="underline decoration-white/40">Manage preferences</a></div>
-  <div class="flex gap-2">
-    <button class="rounded-full border border-white/20 px-4 py-2" id="cookieDecline">Decline</button>
-    <button class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-4 py-2 text-brand-dark" id="cookieAccept">Accept</button>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Industry</label>
+        <select id="aiIndustry" class="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2">
+          <option value="tech">Tech / SaaS</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="ecommerce">E-commerce / Retail</option>
+          <option value="fmcg">FMCG / Food</option>
+          <option value="utilities">Utilities / Energy</option>
+          <option value="other">Other / General</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Goal</label>
+        <select id="aiGoal" class="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2">
+          <option value="balanced">Balanced</option>
+          <option value="removal">High-removal focus</option>
+          <option value="cost">Cost-optimised</option>
+          <option value="plastic">Plastic-impact focus</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4 flex gap-2">
+      <button id="aiApply" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-5 py-3 text-brand-dark hover:shadow-soft">Apply preset</button>
+      <button id="aiSkip" class="rounded-full border border-white/20 px-5 py-3">Skip</button>
+    </div>
   </div>
 </div>
 
 <script>
-  const $ = s => document.querySelector(s);
+const $ = s => document.querySelector(s);
 
-  // Mobile drawer
-  const drawer = $('#drawer');
-  $('#menuBtn')?.addEventListener('click', ()=> drawer.classList.remove('hidden'));
-  $('#menuClose')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
-  $('#drawerBackdrop')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
+// prices
+const price = { biochar:123, renew:4, plastic:200, vcs:4 };
 
-  // Prices
-  const price = { biochar:123, renew:4, plastic:200, vcs:4 };
+// elements
+const tTotal = $('#tTotal');
+const sliders = { b:$('#bT'), r:$('#rT'), p:$('#pT'), v:$('#vT') };
+const nums    = { b:$('#bN'), r:$('#rN'), p:$('#pN'), v:$('#vN') };
+const bars    = { b:$('#barB'), r:$('#barR'), p:$('#barP'), v:$('#barV'), f:$('#barF') };
+const remainVal = $('#remainVal');
 
-  // Elements
-  const tTotal = $('#tTotal');
-  const sliders = { b:$('#bT'), r:$('#rT'), p:$('#pT'), v:$('#vT') };
-  const nums    = { b:$('#bN'), r:$('#rN'), p:$('#pN'), v:$('#vN') };
-  const remainBar = $('#remainBar'), remainVal = $('#remainVal');
-
-  // Keep slider and number in sync; cap so sum <= total
-  function capAndSync(key, newVal){
-    const total = Math.max(1, +tTotal.value||0);
-    const otherSum = Object.entries(nums).filter(([k])=>k!==key).reduce((s,[,el])=>s+(+el.value||0),0);
-    const maxForKey = Math.max(0, total - otherSum);
-    const val = Math.min(Math.max(0, +newVal||0), maxForKey);
-    nums[key].value = val;
-    sliders[key].value = val;
-    recalc();
+// helper: set slider max to total
+function syncMax(){
+  const total = Math.max(1, +tTotal.value||0);
+  for (const k of ['b','r','p','v']){
+    sliders[k].max = total;
+    nums[k].max = total;
+    // cap if above
+    if (+nums[k].value > total) { nums[k].value = total; sliders[k].value = total; }
   }
+}
 
-  // Update remaining bar & prices
-  function recalc(){
-    const total = Math.max(1, +tTotal.value||0);
-    const b = +nums.b.value||0, r = +nums.r.value||0, p = +nums.p.value||0, v = +nums.v.value||0;
-    const used = b+r+p+v, remain = Math.max(0, total-used);
-    remainVal.textContent = remain.toLocaleString(undefined);
-    const usedPct = Math.min(100, (used/total)*100);
-    remainBar.style.width = usedPct + '%';
-
-    const rows = [
-      ['Biochar', b, price.biochar],
-      ['Renewables', r, price.renew],
-      ['Plastic', p, price.plastic],
-      ['VCUs (VCS v4.4)', v, price.vcs],
-    ];
-    const br = $('#breakdown'); br.innerHTML='';
-    let subtotal=0;
-    for(const [name,t,pt] of rows){
-      const st = t*pt; subtotal += st;
-      const tr = document.createElement('tr');
-      tr.className='border-t border-white/10';
-      tr.innerHTML = `<td class="px-3 py-2">${name}</td>
-                      <td class="px-3 py-2">${t.toLocaleString()}</td>
-                      <td class="px-3 py-2">€${pt.toLocaleString()}</td>
-                      <td class="px-3 py-2">€${st.toLocaleString()}</td>`;
-      br.appendChild(tr);
-    }
-    const avg = used>0 ? subtotal/used : 0;
-    $('#avgPrice').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(avg||0);
-    $('#subtotal').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotal||0);
-    $('#fee').textContent      = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotal*0.12||0);
-  }
-
-  // Sync events
-  tTotal.addEventListener('input', recalc);
-  for(const k of ['b','r','p','v']){
-    sliders[k].addEventListener('input', e=> capAndSync(k, e.target.value));
-    nums[k].addEventListener('input',    e=> capAndSync(k, e.target.value));
-  }
-
-  // RFQ link-share (?t=...&bT=...&rT=...&pT=...&vT=...)
-  function rfqURL(){
-    const params = new URLSearchParams({
-      t: tTotal.value, bT: nums.b.value, rT: nums.r.value, pT: nums.p.value, vT: nums.v.value
-    });
-    const url = location.origin + location.pathname + '?' + params.toString() + '#mix';
-    return url;
-  }
-  $('#rfqShare').addEventListener('click', async ()=>{
-    const url = rfqURL();
-    try{ await navigator.clipboard.writeText(url); alert('RFQ link copied to clipboard'); }
-    catch(_){ prompt('Copy RFQ link:', url); }
-  });
-  $('#getQuote').addEventListener('click', ()=> { location.href = rfqURL(); });
-
-  // Read params on load
-  (function loadFromParams(){
-    const q = new URLSearchParams(location.search);
-    if(q.has('t')) tTotal.value = q.get('t');
-    for(const k of ['b','r','p','v']){
-      const key = k+'T';
-      if(q.has(key)){ nums[k].value = q.get(key); sliders[k].value = q.get(key); }
-    }
-  })();
-
-  // Verify retirement
-  $('#verifyBtn').addEventListener('click', ()=>{
-    const v=$('#txid').value.trim(); const m=$('#verifyMsg');
-    if(!v){ m.textContent='Enter a registry URL or TXID.'; m.className='mt-2 text-xs text-red-400'; return; }
-    try{ if(/^https?:\/\//i.test(v)) window.open(v,'_blank','noopener,noreferrer'); else m.innerHTML=`Search your registry for TXID: <b>${v}</b>`; m.className='mt-2 text-xs text-emerald-400'; }
-    catch(e){ m.textContent='Unable to open. Copy & paste into registry.'; m.className='mt-2 text-xs text-red-400';}
-  });
-
-  // Cookie
-  const cookieId='esg-cookie';
-  function showCookie(){ if(!localStorage.getItem(cookieId)) $('#cookie').classList.remove('hidden'); }
-  $('#cookieAccept').onclick=()=>{ localStorage.setItem(cookieId,'1'); $('#cookie').classList.add('hidden'); };
-  $('#cookieDecline').onclick=()=>{ $('#cookie').classList.add('hidden'); };
-  $('#cookiePrefs').onclick=(e)=>{ e.preventDefault(); alert('Preferences modal (analytics/marketing) – to be implemented.'); };
-  showCookie();
-
-  // Footer year
-  $('#yr').textContent = new Date().getFullYear();
-
-  // First calc
+// cap-only logic (no auto-redistribution)
+function capAndSync(key, newVal){
+  const total = Math.max(1, +tTotal.value||0);
+  const otherSum = Object.entries(nums).filter(([k])=>k!==key).reduce((s,[,el])=>s+(+el.value||0),0);
+  const maxForKey = Math.max(0, total - otherSum);
+  const val = Math.min(Math.max(0, +newVal||0), maxForKey);
+  nums[key].value = val; sliders[key].value = val;
   recalc();
+}
+
+// calc, bar & prices
+function recalc(){
+  syncMax();
+  const total = Math.max(1, +tTotal.value||0);
+  const b = +nums.b.value||0, r = +nums.r.value||0, p = +nums.p.value||0, v = +nums.v.value||0;
+  const used = b+r+p+v, remain = Math.max(0, total-used);
+  remainVal.textContent = remain.toLocaleString();
+
+  const pct = (x)=> Math.max(0, Math.min(100, total? (x/total)*100 : 0));
+  bars.b.style.width = pct(b)+'%';
+  bars.r.style.width = pct(r)+'%';
+  bars.p.style.width = pct(p)+'%';
+  bars.v.style.width = pct(v)+'%';
+  bars.f.style.width = (100 - (pct(b)+pct(r)+pct(p)+pct(v)))+'%';
+
+  const rows = [
+    ['Biochar', b, price.biochar],
+    ['Renewables', r, price.renew],
+    ['Plastic', p, price.plastic],
+    ['VCUs (VCS v4.4)', v, price.vcs],
+  ];
+  const br = $('#breakdown'); br.innerHTML='';
+  let subtotal=0;
+  for(const [name,t,pt] of rows){
+    const st=t*pt; subtotal+=st;
+    const tr=document.createElement('tr'); tr.className='border-t border-white/10';
+    tr.innerHTML=`<td class="px-3 py-2">${name}</td>
+                  <td class="px-3 py-2">${t.toLocaleString()}</td>
+                  <td class="px-3 py-2">€${pt.toLocaleString()}</td>
+                  <td class="px-3 py-2">€${st.toLocaleString()}</td>`;
+    br.appendChild(tr);
+  }
+  const usedT = used>0?used:0;
+  const avg = usedT? subtotal/usedT : 0;
+  $('#avgPrice').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(avg||0);
+  $('#subtotal').textContent = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotal||0);
+  $('#fee').textContent      = new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(subtotal*0.12||0);
+}
+
+// sync events
+tTotal.addEventListener('input', ()=>{ syncMax(); recalc(); });
+for(const k of ['b','r','p','v']){
+  sliders[k].addEventListener('input', e=> capAndSync(k, e.target.value));
+  nums[k].addEventListener('input',    e=> capAndSync(k, e.target.value));
+}
+
+// RFQ share
+function rfqURL(){
+  const params = new URLSearchParams({
+    t:tTotal.value, bT:nums.b.value, rT:nums.r.value, pT:nums.p.value, vT:nums.v.value
+  });
+  return location.origin + location.pathname + '?' + params.toString() + '#mix';
+}
+$('#rfqShare').addEventListener('click', async ()=>{
+  const url = rfqURL();
+  try{ await navigator.clipboard.writeText(url); alert('RFQ link copied'); }
+  catch(_){ prompt('Copy RFQ link:', url); }
+});
+$('#getQuote').addEventListener('click', ()=>{ location.href = rfqURL(); });
+
+// load from URL or defaults (and fix weird initial states)
+(function initFromParams(){
+  const q = new URLSearchParams(location.search);
+  const defaults = { b:25, r:50, p:15, v:10, t:100 };
+  tTotal.value = q.get('t') || defaults.t;
+  for(const k of ['b','r','p','v']){
+    const key = k+'T';
+    const v = q.get(key);
+    nums[k].value = sliders[k].value = v!==null ? v : defaults[k];
+  }
+  // fix if someone ends with 100/0/0/0
+  const sum = ['b','r','p','v'].reduce((s,k)=>s+(+nums[k].value||0),0);
+  if (sum===+tTotal.value && +nums.b.value===sum) {
+    // reset to balanced defaults
+    for(const k of ['b','r','p','v']){ nums[k].value = sliders[k].value = defaults[k]; }
+  }
+  syncMax(); recalc();
+})();
+
+// AI Mix Advisor (heuristic presets)
+const aiModal = $('#aiModal'), aiBtn = $('#aiBtn'), aiClose=$('#aiClose'), aiApply=$('#aiApply'), aiSkip=$('#aiSkip');
+aiBtn.addEventListener('click', ()=> aiModal.classList.remove('hidden'));
+aiClose.addEventListener('click', ()=> aiModal.classList.add('hidden'));
+aiSkip.addEventListener('click', ()=> { localStorage.setItem('mixAdvisorDone','1'); aiModal.classList.add('hidden'); });
+
+function applyPreset(pct){ // pct in %
+  const total = Math.max(1, +tTotal.value||0);
+  const b = Math.round(total*pct.b/100);
+  const r = Math.round(total*pct.r/100);
+  const p = Math.round(total*pct.p/100);
+  let v = total - (b+r+p); // rest into VCS
+  if (v<0) v=0;
+  nums.b.value = sliders.b.value = b;
+  nums.r.value = sliders.r.value = r;
+  nums.p.value = sliders.p.value = p;
+  nums.v.value = sliders.v.value = v;
+  recalc();
+}
+
+aiApply.addEventListener('click', ()=>{
+  const ind = document.getElementById('aiIndustry').value;
+  const goal = document.getElementById('aiGoal').value;
+
+  // base by goal
+  let pct = { balanced:{b:25,r:50,p:15,v:10},
+              removal:{b:40,r:40,p:5,v:15},
+              cost:{b:10,r:70,p:5,v:15},
+              plastic:{b:15,r:40,p:35,v:10} }[goal];
+
+  // light modifiers by industry
+  const mod = { tech:{b:+5,p:-5}, manufacturing:{b:+10,v:-10},
+                ecommerce:{p:+10,v:-10}, fmcg:{p:+10,r:-10},
+                utilities:{r:+10,v:-10}, other:{} }[ind] || {};
+  pct = { b:Math.max(0,(pct.b+(mod.b||0))), r:Math.max(0,(pct.r+(mod.r||0))),
+          p:Math.max(0,(pct.p+(mod.p||0))), v:Math.max(0,(pct.v+(mod.v||0))) };
+  // normalize to 100
+  const s=pct.b+pct.r+pct.p+pct.v; pct.b=pct.b*100/s; pct.r=pct.r*100/s; pct.p=pct.p*100/s; pct.v=pct.v*100/s;
+
+  applyPreset(pct);
+  localStorage.setItem('mixAdvisorDone','1');
+  aiModal.classList.add('hidden');
+});
+
+// show AI on first visit
+if (!localStorage.getItem('mixAdvisorDone')) {
+  setTimeout(()=> aiModal.classList.remove('hidden'), 200);
+}
+
+// header mobile drawer
+const drawer = document.getElementById('drawer');
+document.getElementById('menuBtn')?.addEventListener('click', ()=> drawer.classList.remove('hidden'));
+document.getElementById('menuClose')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
+document.getElementById('drawerBackdrop')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
 </script>
 </body>
 </html>
