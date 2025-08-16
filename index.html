@@ -36,8 +36,7 @@
   <style>
     .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
     .visually-hidden:focus{position:static;width:auto;height:auto;margin:0;clip:auto;white-space:normal;padding:.5rem .75rem;border-radius:.5rem;background:#0f151b;border:1px solid rgba(255,255,255,.3)}
-
-    /* Slider style: white track + blue thumb (good contrast on dark bg) */
+    /* sliders */
     input[type="range"]{ -webkit-appearance:none; appearance:none; height:36px; background:transparent; width:100% }
     input[type="range"]::-webkit-slider-runnable-track{ height:8px; background:#fff; border-radius:999px; opacity:.95 }
     input[type="range"]::-moz-range-track{ height:8px; background:#fff; border-radius:999px; opacity:.95 }
@@ -138,7 +137,7 @@
 
       <!-- Mix Calculator (TONS) -->
       <div id="mix" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#12171d] to-[#0f1419] p-4 sm:p-5 shadow-soft">
-        <!-- AI MIX ADVISOR (inline, nad kalkulačkou) -->
+        <!-- AI MIX ADVISOR -->
         <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4 mb-3">
           <div class="flex items-center justify-between gap-2">
             <h3 class="text-base sm:text-lg font-semibold">AI Mix Advisor</h3>
@@ -154,6 +153,11 @@
                 <option value="ecommerce">E-commerce / Retail</option>
                 <option value="fmcg">FMCG / Food</option>
                 <option value="utilities">Utilities / Energy</option>
+                <option value="logistics">Logistics / Transport</option>
+                <option value="aviation">Aviation</option>
+                <option value="construction">Construction / Real estate</option>
+                <option value="finance">Finance / Services</option>
+                <option value="public">Public sector / Education</option>
                 <option value="other">Other / General</option>
               </select>
             </div>
@@ -164,13 +168,17 @@
                 <option value="removal">High-removal focus</option>
                 <option value="cost">Cost-optimised</option>
                 <option value="plastic">Plastic-impact focus</option>
+                <option value="brand">Brand/CSR impact</option>
+                <option value="science">Science-based (higher removals)</option>
               </select>
             </div>
           </div>
         </div>
 
         <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
-        <p class="mt-1 text-xs text-slate-400">Indicative price per tCO₂: Biochar €123, Renewable €4, Plastic €200, VCS v4.4 €4. Final price depends on availability & project selection.</p>
+        <p id="tierNote" class="mt-1 text-xs text-slate-400">
+          Prices auto-adjust by volume tier. Current tier: —. Current €/t → Biochar —, Renewable —, Plastic —, VCS —.
+        </p>
 
         <!-- Total tonnes -->
         <div class="mt-3 flex items-center gap-3">
@@ -190,11 +198,11 @@
           </div>
         </div>
 
-        <!-- Sliders in TONNES -->
+        <!-- Sliders in TONNES (labels show dynamic €/t) -->
         <div class="mt-4 space-y-4">
           <div>
             <div class="flex items-center justify-between">
-              <label for="tBiochar" class="text-sm text-slate-300">Biochar <span class="text-slate-400">(€123/t)</span></label>
+              <label for="tBiochar" class="text-sm text-slate-300">Biochar <span id="pBiocharLbl" class="text-slate-400">(€—/t)</span></label>
               <div class="text-xs text-slate-400"><b id="tBiocharLbl">25.00</b> t</div>
             </div>
             <input id="tBiochar" type="range" min="0" max="100" value="25" class="w-full"/>
@@ -202,7 +210,7 @@
 
           <div>
             <div class="flex items-center justify-between">
-              <label for="tRenew" class="text-sm text-slate-300">Renewable Energy <span class="text-slate-400">(€4/t)</span></label>
+              <label for="tRenew" class="text-sm text-slate-300">Renewable Energy <span id="pRenewLbl" class="text-slate-400">(€—/t)</span></label>
               <div class="text-xs text-slate-400"><b id="tRenewLbl">50.00</b> t</div>
             </div>
             <input id="tRenew" type="range" min="0" max="100" value="50" class="w-full"/>
@@ -211,7 +219,7 @@
 
           <div>
             <div class="flex items-center justify-between">
-              <label for="tPlastic" class="text-sm text-slate-300">Plastic Credits <span class="text-slate-400">(€200/t)</span></label>
+              <label for="tPlastic" class="text-sm text-slate-300">Plastic Credits <span id="pPlasticLbl" class="text-slate-400">(€—/t)</span></label>
               <div class="text-xs text-slate-400"><b id="tPlasticLbl">15.00</b> t</div>
             </div>
             <input id="tPlastic" type="range" min="0" max="100" value="15" class="w-full"/>
@@ -219,7 +227,7 @@
 
           <div>
             <div class="flex items-center justify-between">
-              <label for="tVCS" class="text-sm text-slate-300">VCUs – VCS v4.4 <span class="text-slate-400">(€4/t)</span></label>
+              <label for="tVCS" class="text-sm text-slate-300">VCUs – VCS v4.4 <span id="pVcsLbl" class="text-slate-400">(€—/t)</span></label>
               <div class="text-xs text-slate-400"><b id="tVCSLbl">10.00</b> t</div>
             </div>
             <input id="tVCS" type="range" min="0" max="100" value="10" class="w-full"/>
@@ -228,16 +236,10 @@
           <div class="text-xs text-slate-400">Allocated: <b id="allocatedLbl">100.00</b> t • Total: <b id="totalLbl">100</b> t</div>
         </div>
 
-        <!-- Summary KPIs (fee hidden) -->
+        <!-- Summary KPIs (fee skryté) -->
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4">
-            <div class="text-[11px] text-slate-400">Avg. price / t</div>
-            <b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4">
-            <div class="text-[11px] text-slate-400">Est. subtotal</div>
-            <b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b>
-          </div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t (excl. platform fee)</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal (excl. fee)</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
         </div>
 
         <!-- Allocation breakdown -->
@@ -323,7 +325,6 @@
         <img class="h-40 w-full object-cover" width="1200" height="160" src="./biochar.jpg" alt="Biochar removal"/>
         <div class="p-3">
           <b class="block">Biochar Removal • EU</b>
-          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Registry: Puro.earth • Methodology: Biochar</div>
           <div class="mt-2 flex flex-wrap items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Removal</span>
@@ -336,7 +337,6 @@
         <img class="h-40 w-full object-cover" width="1200" height="160" src="./renewables.jpg" alt="Renewable energy"/>
         <div class="p-3">
           <b class="block">Renewable Energy • Global</b>
-          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Registries: Verra / Gold Standard / ACR • Methodology: Renewables & AFOLU</div>
           <div class="mt-2 flex flex-wrap items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Renewables</span>
@@ -349,7 +349,6 @@
         <img class="h-40 w-full object-cover" width="1200" height="160" src="./plastic.jpg" alt="Plastic credits"/>
         <div class="p-3">
           <b class="block">Plastic Credits • Global</b>
-          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Standards: PWRS / PCX • Verified collection & recovery</div>
           <div class="mt-2 flex flex-wrap items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">Plastic</span>
@@ -362,7 +361,6 @@
         <img class="h-40 w-full object-cover" width="1200" height="160" src="./vcs.jpg" alt="VCUs VCS v4.4"/>
         <div class="p-3">
           <b class="block">Verified Carbon Units (VCUs) • Global</b>
-          <div class="mt-1 text-[11px] sm:text-xs text-slate-400">Standard: Verified Carbon Standard (VCS v4.4) • Registry: Verra • 1 VCU = 1 tCO₂e</div>
           <div class="mt-2 flex flex-wrap items-center gap-2">
             <a class="rounded-full border border-white/20 px-3 py-1 text-sm hover:shadow-soft" href="#mix">Add to mix</a>
             <span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[11px]">VCU</span>
@@ -371,7 +369,7 @@
         </div>
       </article>
     </div>
-    <p class="mt-2 text-[11px] sm:text-xs text-slate-400">Prices are indicative; final price depends on availability and project selection.</p>
+    <p class="mt-2 text-[11px] sm:text-xs text-slate-400">Prices are volume-based and update automatically in the calculator.</p>
   </section>
 
   <!-- How it works -->
@@ -517,10 +515,12 @@
 </div>
 
 <script>
-  // ---------- Shared shorthands & UI ----------
+  // ---------- Shorthands ----------
   const $ = s => document.querySelector(s);
+  const fmtEUR = x => new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(x);
+  const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
 
-  // Mobile drawer
+  // ---------- Header & misc ----------
   const drawer = $('#drawer');
   $('#menuBtn')?.addEventListener('click', ()=> drawer.classList.remove('hidden'));
   $('#menuClose')?.addEventListener('click', ()=> drawer.classList.add('hidden'));
@@ -551,20 +551,56 @@
   document.getElementById('loginBtn')?.addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
   document.getElementById('loginBtnM')?.addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
 
-  // ---------- Mix calculator in TONNES ----------
-  const PRICES = { biochar:123, renew:4, plastic:200, vcs:4 };
-
-  // ---- Volume-based platform fee tiers (internal only; not shown in UI) ----
-  // Small:   1–1,000 t => 25%
-  // Medium:  1,001–100,000 t => 15%
-  // Corporate: 100,001+ t => 10%
-  function getFeePct(totalTons){
-    const t = Math.max(1, Number(totalTons) || 0);
-    if (t <= 1000) return 0.25;
-    if (t <= 100000) return 0.15;
-    return 0.10;
+  // ---------- Volume-based product prices ----------
+  // Tiers are chosen so that 10–999 t matches your indicative €/t.
+  const PRICE_TIERS = {
+    biochar: [
+      {min:0, max:9,        price:150},
+      {min:10, max:999,     price:123},
+      {min:1000, max:99999, price:115},
+      {min:100000, max:Infinity, price:100}
+    ],
+    renew: [
+      {min:0, max:9,        price:6},
+      {min:10, max:999,     price:4},
+      {min:1000, max:99999, price:3.5},
+      {min:100000, max:Infinity, price:3}
+    ],
+    plastic: [
+      {min:0, max:9,        price:240},
+      {min:10, max:999,     price:200},
+      {min:1000, max:99999, price:180},
+      {min:100000, max:Infinity, price:160}
+    ],
+    vcs: [
+      {min:0, max:9,        price:6},
+      {min:10, max:999,     price:4},
+      {min:1000, max:99999, price:3.5},
+      {min:100000, max:Infinity, price:3}
+    ],
+  };
+  function getTierName(T){
+    if(T<=9) return 'Tier A (0–9 t)';
+    if(T<=999) return 'Tier B (10–999 t)';
+    if(T<=99999) return 'Tier C (1k–99,999 t)';
+    return 'Tier D (100k+ t)';
+  }
+  function unitPrice(kind, totalTons){
+    const tiers = PRICE_TIERS[kind];
+    const t = Math.max(1, Number(totalTons)||0);
+    const row = tiers.find(x => t>=x.min && t<=x.max) || tiers[tiers.length-1];
+    return row.price;
   }
 
+  // ---------- Platform fee (hidden, for back-end use) ----------
+  function platformFeePct(totalTons){
+    const t = Math.max(1, Number(totalTons)||0);
+    if(t <= 1000) return 0.25;        // small clients
+    if(t <= 100000) return 0.15;      // mid-size
+    return 0.10;                      // corporate
+  }
+
+  // ---------- Calculator refs ----------
   const tTotal   = $('#tonnes');
   const sBiochar = $('#tBiochar');
   const sRenew   = $('#tRenew');
@@ -576,15 +612,18 @@
   const lPlastic = $('#tPlasticLbl');
   const lVCS     = $('#tVCSLbl');
 
+  const prBiochar = $('#pBiocharLbl');
+  const prRenew   = $('#pRenewLbl');
+  const prPlastic = $('#pPlasticLbl');
+  const prVcs     = $('#pVcsLbl');
+
   const lRemain  = $('#remainLabel');
   const barRemain= $('#remainBar');
   const lAlloc   = $('#allocatedLbl');
   const lTotal   = $('#totalLbl');
+  const tierNote = $('#tierNote');
 
   const rfqInput = $('#rfqUrl');
-
-  function fmtEUR(x){ return new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(x); }
-  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
 
   function getAllocations(){
     return {
@@ -595,7 +634,6 @@
       vcs:     parseFloat(sVCS.value)||0,
     };
   }
-
   function syncSliderMax(){
     const T = Math.max(1, parseFloat(tTotal.value)||0);
     [sBiochar,sRenew,sPlastic,sVCS].forEach(sl=> sl.max = String(T));
@@ -607,6 +645,20 @@
     const allocated = a.biochar + a.renew + a.plastic + a.vcs;
     const remaining = clamp(a.total - allocated, 0, a.total);
 
+    // dynamic €/t by current total
+    const pb = unitPrice('biochar', a.total);
+    const pr = unitPrice('renew',   a.total);
+    const pp = unitPrice('plastic', a.total);
+    const pv = unitPrice('vcs',     a.total);
+
+    // update labels
+    prBiochar.textContent = `(${fmtEUR(pb)}/t)`.replace('\u00A0',' ');
+    prRenew.textContent   = `(${fmtEUR(pr)}/t)`;
+    prPlastic.textContent = `(${fmtEUR(pp)}/t)`;
+    prVcs.textContent     = `(${fmtEUR(pv)}/t)`;
+    tierNote.textContent = `Prices auto-adjust by volume tier. Current tier: ${getTierName(a.total)}. Current €/t → Biochar ${fmtEUR(pb)}, Renewable ${fmtEUR(pr)}, Plastic ${fmtEUR(pp)}, VCS ${fmtEUR(pv)}.`;
+
+    // UI numbers
     lBiochar.textContent = a.biochar.toFixed(2);
     lRenew.textContent   = a.renew.toFixed(2);
     lPlastic.textContent = a.plastic.toFixed(2);
@@ -614,27 +666,21 @@
 
     lAlloc.textContent   = allocated.toFixed(2);
     lRemain.textContent  = remaining.toFixed(2);
-    const pct = clamp(remaining / a.total * 100, 0, 100);
-    barRemain.style.width = `${pct}%`;
+    barRemain.style.width = `${clamp(remaining / a.total * 100, 0, 100)}%`;
 
+    // costs (fee hidden from UI, but computed for RFQ params)
     const subtotal =
-      a.biochar*PRICES.biochar +
-      a.renew*PRICES.renew +
-      a.plastic*PRICES.plastic +
-      a.vcs*PRICES.vcs;
-
+      a.biochar*pb + a.renew*pr + a.plastic*pp + a.vcs*pv;
     const avg = subtotal / Math.max(1, a.total);
+    const feePct = platformFeePct(a.total);
+    const fee = subtotal * feePct;              // not displayed
+    const totalWithFee = subtotal + fee;        // not displayed
 
-    // Internal fee (hidden in UI)
-    const feePct = getFeePct(a.total);
-    const fee = subtotal * feePct;
-    // (If needed later, include feePct/fee in RFQ payload; not shown in UI.)
+    $('#avgPrice').textContent = fmtEUR(avg);
+    $('#subtotal').textContent = fmtEUR(subtotal);
 
-    document.getElementById('avgPrice').textContent = fmtEUR(avg);
-    document.getElementById('subtotal').textContent = fmtEUR(subtotal);
-
-    renderBreakdown(a);
-    updateShareUrl(a);
+    renderBreakdown(a, {pb,pr,pp,pv});
+    updateShareUrl(a, {pb,pr,pp,pv,feePct,totalWithFee});
   }
 
   function onSlide(sliderKey){
@@ -653,12 +699,12 @@
     recalcAll();
   }
 
-  function renderBreakdown(a){
+  function renderBreakdown(a, p){
     const rows = [
-      { label:'Biochar', price:PRICES.biochar, t:a.biochar },
-      { label:'Renewable Energy', price:PRICES.renew, t:a.renew },
-      { label:'Plastic Credits', price:PRICES.plastic, t:a.plastic },
-      { label:'VCUs (VCS v4.4)', price:PRICES.vcs, t:a.vcs },
+      { label:'Biochar', price:p.pb, t:a.biochar },
+      { label:'Renewable Energy', price:p.pr, t:a.renew },
+      { label:'Plastic Credits', price:p.pp, t:a.plastic },
+      { label:'VCUs (VCS v4.4)', price:p.pv, t:a.vcs },
     ].map(r=>{
       const share = (r.t / a.total) * 100;
       const sub   = r.t * r.price;
@@ -670,25 +716,25 @@
         <td class="px-3 py-2">${fmtEUR(sub)}</td>
       </tr>`;
     }).join('');
-    document.getElementById('breakTbody').innerHTML = rows;
+    $('#breakTbody').innerHTML = rows;
   }
 
-  function updateShareUrl(a){
+  function updateShareUrl(a, p){
     const params = new URLSearchParams({
-      t: a.total, bT: a.biochar, rT: a.renew, pT: a.plastic, vT: a.vcs
+      t: a.total, bT: a.biochar, rT: a.renew, pT: a.plastic, vT: a.vcs,
+      pb:p.pb, pr:p.pr, pp:p.pp, pv:p.pv, fee: platformFeePct(a.total)
     });
     const existing = getParamsFromPage();
     if(existing.get('src')) params.set('src', existing.get('src'));
     const base = location.origin + location.pathname + '#mix';
     rfqInput.value = `${base}?${params.toString()}`;
   }
-
   function getParamsFromPage(){
     if(location.hash && location.hash.includes('?')) return new URLSearchParams(location.hash.split('?')[1]);
     return new URLSearchParams(location.search);
   }
 
-  function initFromUrl(){
+  function syncFromUrlOrDefaults(){
     const sp = getParamsFromPage();
     if([...sp.keys()].length === 0){
       syncSliderMax();
@@ -700,12 +746,13 @@
 
     const bT = sp.get('bT'), rT=sp.get('rT'), pT=sp.get('pT'), vT=sp.get('vT');
     if(bT || rT || pT || vT){
-      if(bT) sBiochar.value = clamp(parseFloat(bT)||0, 0, parseFloat(tTotal.value));
-      if(rT) sRenew.value   = clamp(parseFloat(rT)||0, 0, parseFloat(tTotal.value));
-      if(pT) sPlastic.value = clamp(parseFloat(pT)||0, 0, parseFloat(tTotal.value));
-      if(vT) sVCS.value     = clamp(parseFloat(vT)||0, 0, parseFloat(tTotal.value));
+      const T = parseFloat(tTotal.value)||100;
+      if(bT) sBiochar.value = clamp(parseFloat(bT)||0, 0, T);
+      if(rT) sRenew.value   = clamp(parseFloat(rT)||0, 0, T);
+      if(pT) sPlastic.value = clamp(parseFloat(pT)||0, 0, T);
+      if(vT) sVCS.value     = clamp(parseFloat(vT)||0, 0, T);
     }else{
-      // backwards compatible: percent params -> tonnes
+      // percent fallback
       const b = parseFloat(sp.get('b')||'')||0;
       const r = parseFloat(sp.get('r')||'')||0;
       const p = parseFloat(sp.get('p')||'')||0;
@@ -725,9 +772,7 @@
     const a = getAllocations();
     let over = a.biochar + a.renew + a.plastic + a.vcs - a.total;
     if(over <= 0) return;
-    const order = [
-      {sl:sVCS}, {sl:sRenew}, {sl:sPlastic}, {sl:sBiochar},
-    ];
+    const order = [{sl:sVCS},{sl:sRenew},{sl:sPlastic},{sl:sBiochar}];
     for(const it of order){
       if(over <= 0) break;
       const cur = parseFloat(it.sl.value)||0;
@@ -738,24 +783,20 @@
   }
 
   // Events
-  tTotal.addEventListener('input', ()=>{
-    syncSliderMax();
-    capIfOverTotal();
-    recalcAll();
-  });
+  tTotal.addEventListener('input', ()=>{ syncSliderMax(); capIfOverTotal(); recalcAll(); });
   sBiochar.addEventListener('input', ()=> onSlide('biochar'));
   sRenew.addEventListener('input',   ()=> onSlide('renew'));
   sPlastic.addEventListener('input', ()=> onSlide('plastic'));
   sVCS.addEventListener('input',     ()=> onSlide('vcs'));
 
   // RFQ link buttons
-  document.getElementById('copyLink').addEventListener('click', async ()=>{
-    try{ await navigator.clipboard.writeText(document.getElementById('rfqUrl').value); alert('RFQ link copied to clipboard.'); }
-    catch(e){ document.getElementById('rfqUrl').select(); document.execCommand('copy'); alert('RFQ link copied.'); }
+  $('#copyLink').addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText($('#rfqUrl').value); alert('RFQ link copied to clipboard.'); }
+    catch(e){ $('#rfqUrl').select(); document.execCommand('copy'); alert('RFQ link copied.'); }
   });
-  document.getElementById('openLink').addEventListener('click', ()=> window.open(document.getElementById('rfqUrl').value,'_blank','noopener,noreferrer'));
+  $('#openLink').addEventListener('click', ()=> window.open($('#rfqUrl').value,'_blank','noopener,noreferrer'));
 
-  // ---------- AI Mix Advisor (inline) ----------
+  // ---------- AI Mix Advisor logic ----------
   function applyPreset(pct){ // pct in %
     const T = Math.max(1, parseFloat(tTotal.value)||0);
     const b = Math.round(T * pct.b/100);
@@ -766,26 +807,51 @@
     recalcAll();
   }
 
+  // Base goal templates
+  const GOAL = {
+    balanced: {b:25,r:50,p:15,v:10},
+    removal:  {b:45,r:35,p:5, v:15},
+    cost:     {b:10,r:70,p:5, v:15},
+    plastic:  {b:15,r:40,p:35,v:10},
+    brand:    {b:30,r:40,p:15,v:15},
+    science:  {b:55,r:25,p:5, v:15}
+  };
+  // Industry modifiers (percentage points before normalisation)
+  const IND = {
+    tech:          {b:+5,  r:+5,  p:-5, v:-5},
+    manufacturing: {b:+10, r:-5,  p:+0, v:-5},
+    ecommerce:     {b:+0,  r:+0,  p:+10, v:-10},
+    fmcg:          {b:+0,  r:-5,  p:+10, v:-5},
+    utilities:     {b:+5,  r:+10, p:-5, v:-10},
+    logistics:     {b:+10, r:+10, p:+5,  v:-25},   // vyšší removal + renew, menší share VCS
+    aviation:      {b:+15, r:+0,  p:+0,  v:-15},   // dôraz na removals
+    construction:  {b:+10, r:+0,  p:+0,  v:-10},
+    finance:       {b:+5,  r:+5,  p:+0,  v:-10},
+    public:        {b:+5,  r:+5,  p:+5,  v:-15},
+    other:         {}
+  };
+
   document.getElementById('aiApply').addEventListener('click', ()=>{
     const ind = document.getElementById('aiIndustry').value;
     const goal = document.getElementById('aiGoal').value;
-    let pct = { balanced:{b:25,r:50,p:15,v:10},
-                removal:{b:40,r:40,p:5,v:15},
-                cost:{b:10,r:70,p:5,v:15},
-                plastic:{b:15,r:40,p:35,v:10} }[goal];
-    const mod = { tech:{b:+5,p:-5}, manufacturing:{b:+10,v:-10},
-                  ecommerce:{p:+10,v:-10}, fmcg:{p:+10,r:-10},
-                  utilities:{r:+10,v:-10}, other:{} }[ind] || {};
-    pct = { b:Math.max(0,(pct.b+(mod.b||0))),
-            r:Math.max(0,(pct.r+(mod.r||0))),
-            p:Math.max(0,(pct.p+(mod.p||0))),
-            v:Math.max(0,(pct.v+(mod.v||0))) };
-    const s=pct.b+pct.r+pct.p+pct.v; pct.b=pct.b*100/s; pct.r=pct.r*100/s; pct.p=pct.p*100/s; pct.v=pct.v*100/s;
+    const base = GOAL[goal] || GOAL.balanced;
+    const mod  = IND[ind] || {};
+    let pct = {
+      b: Math.max(0, (base.b + (mod.b||0))),
+      r: Math.max(0, (base.r + (mod.r||0))),
+      p: Math.max(0, (base.p + (mod.p||0))),
+      v: Math.max(0, (base.v + (mod.v||0)))
+    };
+    const sum = pct.b + pct.r + pct.p + pct.v || 100;
+    pct = { b:100*pct.b/sum, r:100*pct.r/sum, p:100*pct.p/sum, v:100*pct.v/sum };
     applyPreset(pct);
   });
 
   // Init
-  initFromUrl();
+  function init(){
+    syncFromUrlOrDefaults();
+  }
+  init();
 </script>
 </body>
 </html>
