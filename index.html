@@ -177,7 +177,7 @@
 
         <h3 class="text-lg sm:text-xl font-semibold">Quick ESG Mix Calculator</h3>
         <p id="tierNote" class="mt-1 text-xs text-slate-400">
-          Prices auto-adjust by volume tier. Current tier: —. Current €/t → Biochar —, Renewable —, Plastic —, VCS —.
+          Volume-based pricing with built-in markup. Current tier: —. €/t with markup → Biochar —, Renewable —, Plastic —, VCS —.
         </p>
 
         <!-- Total tonnes -->
@@ -198,7 +198,7 @@
           </div>
         </div>
 
-        <!-- Sliders in TONNES (labels show dynamic €/t) -->
+        <!-- Sliders in TONNES (labels show €/t incl. markup) -->
         <div class="mt-4 space-y-4">
           <div>
             <div class="flex items-center justify-between">
@@ -236,10 +236,10 @@
           <div class="text-xs text-slate-400">Allocated: <b id="allocatedLbl">100.00</b> t • Total: <b id="totalLbl">100</b> t</div>
         </div>
 
-        <!-- Summary KPIs (fee skryté) -->
+        <!-- Summary KPIs (už bez samostatného fee) -->
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t (excl. platform fee)</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal (excl. fee)</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t (incl. markup)</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
+          <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal (incl. markup)</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
         </div>
 
         <!-- Allocation breakdown -->
@@ -369,7 +369,7 @@
         </div>
       </article>
     </div>
-    <p class="mt-2 text-[11px] sm:text-xs text-slate-400">Prices are volume-based and update automatically in the calculator.</p>
+    <p class="mt-2 text-[11px] sm:text-xs text-slate-400">Prices include volume-based markup and update dynamically in the calculator.</p>
   </section>
 
   <!-- How it works -->
@@ -551,53 +551,32 @@
   document.getElementById('loginBtn')?.addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
   document.getElementById('loginBtnM')?.addEventListener('click', ()=>alert('Auth modal here (OAuth2/OIDC + 2FA)'));
 
-  // ---------- Volume-based product prices ----------
-  // Tiers are chosen so that 10–999 t matches your indicative €/t.
-  const PRICE_TIERS = {
-    biochar: [
-      {min:0, max:9,        price:150},
-      {min:10, max:999,     price:123},
-      {min:1000, max:99999, price:115},
-      {min:100000, max:Infinity, price:100}
-    ],
-    renew: [
-      {min:0, max:9,        price:6},
-      {min:10, max:999,     price:4},
-      {min:1000, max:99999, price:3.5},
-      {min:100000, max:Infinity, price:3}
-    ],
-    plastic: [
-      {min:0, max:9,        price:240},
-      {min:10, max:999,     price:200},
-      {min:1000, max:99999, price:180},
-      {min:100000, max:Infinity, price:160}
-    ],
-    vcs: [
-      {min:0, max:9,        price:6},
-      {min:10, max:999,     price:4},
-      {min:1000, max:99999, price:3.5},
-      {min:100000, max:Infinity, price:3}
-    ],
-  };
-  function getTierName(T){
-    if(T<=9) return 'Tier A (0–9 t)';
-    if(T<=999) return 'Tier B (10–999 t)';
-    if(T<=99999) return 'Tier C (1k–99,999 t)';
-    return 'Tier D (100k+ t)';
-  }
-  function unitPrice(kind, totalTons){
-    const tiers = PRICE_TIERS[kind];
-    const t = Math.max(1, Number(totalTons)||0);
-    const row = tiers.find(x => t>=x.min && t<=x.max) || tiers[tiers.length-1];
-    return row.price;
-  }
+  // ---------- BASE PRICES (editable in your internal tool) ----------
+  const BASE_PRICES = { biochar:123, renew:4, plastic:200, vcs:4 };
 
-  // ---------- Platform fee (hidden, for back-end use) ----------
-  function platformFeePct(totalTons){
-    const t = Math.max(1, Number(totalTons)||0);
-    if(t <= 1000) return 0.25;        // small clients
-    if(t <= 100000) return 0.15;      // mid-size
-    return 0.10;                      // corporate
+  // ---------- MARKUP TIERS (applied on top of base) ----------
+  // ≤10 t: +50%, ≤1000 t: +25%, ≤100000 t: +15%, >100000 t: +10%
+  const MARKUP_TIERS = [
+    { min:1,       max:10,       pct:0.50 },
+    { min:11,      max:1000,     pct:0.25 },
+    { min:1001,    max:100000,   pct:0.15 },
+    { min:100001,  max:Infinity, pct:0.10 },
+  ];
+  function markupPct(totalTons){
+    const t = Math.max(1, Number(totalTons)||1);
+    const tier = MARKUP_TIERS.find(x => t>=x.min && t<=x.max) || MARKUP_TIERS[MARKUP_TIERS.length-1];
+    return tier.pct;
+  }
+  function tierName(totalTons){
+    const t = Math.max(1, Number(totalTons)||1);
+    if(t<=10) return 'Tier A (≤10 t, +50%)';
+    if(t<=1000) return 'Tier B (11–1,000 t, +25%)';
+    if(t<=100000) return 'Tier C (1,001–100,000 t, +15%)';
+    return 'Tier D (100,001+ t, +10%)';
+  }
+  // final €/t shown to users = base * (1 + markupPct)
+  function unitPrice(kind, totalTons){
+    return BASE_PRICES[kind] * (1 + markupPct(totalTons));
   }
 
   // ---------- Calculator refs ----------
@@ -645,18 +624,18 @@
     const allocated = a.biochar + a.renew + a.plastic + a.vcs;
     const remaining = clamp(a.total - allocated, 0, a.total);
 
-    // dynamic €/t by current total
+    // dynamic €/t incl. markup
     const pb = unitPrice('biochar', a.total);
     const pr = unitPrice('renew',   a.total);
     const pp = unitPrice('plastic', a.total);
     const pv = unitPrice('vcs',     a.total);
 
     // update labels
-    prBiochar.textContent = `(${fmtEUR(pb)}/t)`.replace('\u00A0',' ');
+    prBiochar.textContent = `(${fmtEUR(pb)}/t)`;
     prRenew.textContent   = `(${fmtEUR(pr)}/t)`;
     prPlastic.textContent = `(${fmtEUR(pp)}/t)`;
     prVcs.textContent     = `(${fmtEUR(pv)}/t)`;
-    tierNote.textContent = `Prices auto-adjust by volume tier. Current tier: ${getTierName(a.total)}. Current €/t → Biochar ${fmtEUR(pb)}, Renewable ${fmtEUR(pr)}, Plastic ${fmtEUR(pp)}, VCS ${fmtEUR(pv)}.`;
+    tierNote.textContent = `Volume-based pricing with built-in markup. Current tier: ${tierName(a.total)}. €/t with markup → Biochar ${fmtEUR(pb)}, Renewable ${fmtEUR(pr)}, Plastic ${fmtEUR(pp)}, VCS ${fmtEUR(pv)}.`;
 
     // UI numbers
     lBiochar.textContent = a.biochar.toFixed(2);
@@ -668,19 +647,15 @@
     lRemain.textContent  = remaining.toFixed(2);
     barRemain.style.width = `${clamp(remaining / a.total * 100, 0, 100)}%`;
 
-    // costs (fee hidden from UI, but computed for RFQ params)
-    const subtotal =
-      a.biochar*pb + a.renew*pr + a.plastic*pp + a.vcs*pv;
+    // costs (now incl. markup; no separate platform fee on top)
+    const subtotal = a.biochar*pb + a.renew*pr + a.plastic*pp + a.vcs*pv;
     const avg = subtotal / Math.max(1, a.total);
-    const feePct = platformFeePct(a.total);
-    const fee = subtotal * feePct;              // not displayed
-    const totalWithFee = subtotal + fee;        // not displayed
 
     $('#avgPrice').textContent = fmtEUR(avg);
     $('#subtotal').textContent = fmtEUR(subtotal);
 
     renderBreakdown(a, {pb,pr,pp,pv});
-    updateShareUrl(a, {pb,pr,pp,pv,feePct,totalWithFee});
+    updateShareUrl(a, {pb,pr,pp,pv});
   }
 
   function onSlide(sliderKey){
@@ -722,7 +697,8 @@
   function updateShareUrl(a, p){
     const params = new URLSearchParams({
       t: a.total, bT: a.biochar, rT: a.renew, pT: a.plastic, vT: a.vcs,
-      pb:p.pb, pr:p.pr, pp:p.pp, pv:p.pv, fee: platformFeePct(a.total)
+      pb:p.pb.toFixed(2), pr:p.pr.toFixed(2), pp:p.pp.toFixed(2), pv:p.pv.toFixed(2),
+      mk: markupPct(a.total) // for sales to know applied markup tier
     });
     const existing = getParamsFromPage();
     if(existing.get('src')) params.set('src', existing.get('src'));
@@ -752,7 +728,7 @@
       if(pT) sPlastic.value = clamp(parseFloat(pT)||0, 0, T);
       if(vT) sVCS.value     = clamp(parseFloat(vT)||0, 0, T);
     }else{
-      // percent fallback
+      // percent fallback (legacy)
       const b = parseFloat(sp.get('b')||'')||0;
       const r = parseFloat(sp.get('r')||'')||0;
       const p = parseFloat(sp.get('p')||'')||0;
@@ -823,8 +799,8 @@
     ecommerce:     {b:+0,  r:+0,  p:+10, v:-10},
     fmcg:          {b:+0,  r:-5,  p:+10, v:-5},
     utilities:     {b:+5,  r:+10, p:-5, v:-10},
-    logistics:     {b:+10, r:+10, p:+5,  v:-25},   // vyšší removal + renew, menší share VCS
-    aviation:      {b:+15, r:+0,  p:+0,  v:-15},   // dôraz na removals
+    logistics:     {b:+10, r:+10, p:+5,  v:-25},
+    aviation:      {b:+15, r:+0,  p:+0,  v:-15},
     construction:  {b:+10, r:+0,  p:+0,  v:-10},
     finance:       {b:+5,  r:+5,  p:+0,  v:-10},
     public:        {b:+5,  r:+5,  p:+5,  v:-15},
