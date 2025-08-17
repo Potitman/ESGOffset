@@ -848,191 +848,130 @@ S3,950" class="mt-1 w-full rounded-md border border-white/15 bg-transparent p-2 
   });
   $('#openLink').addEventListener('click', ()=> window.open($('#rfqUrl').value,'_blank','noopener,noreferrer'));
 
-  // ---------- AI Mix Advisor logic (presets) ----------
-  function applyPreset(pct){ // pct in %
-    const T = Math.max(1, parseFloat(tTotal.value)||0);
-    const b = Math.round(T * pct.b/100);
-    const r = Math.round(T * pct.r/100);
-    const p = Math.round(T * pct.p/100);
-    let v = T - (b+r+p); if(v<0) v=0;
-    sBiochar.value=b; sRenew.value=r; sPlastic.value=p; sVCS.value=v;
-    recalcAll();
-  }
+/* ---------- AI Mix Advisor (Upload & Analyze) ---------- */
+const det = { s1:null, s2_loc:null, s2_mkt:null, s3:null, total:null, suggestedMix:null };
 
-  const GOAL = {
-    balanced: {b:25,r:50,p:15,v:10},
-    removal:  {b:45,r:35,p:5, v:15},
-    cost:     {b:10,r:70,p:5, v:15},
-    plastic:  {b:15,r:40,p:35,v:10},
-    brand:    {b:30,r:40,p:15,v:15},
-    science:  {b:55,r:25,p:5, v:15}
-  };
-  const IND = {
-    tech:          {b:+5,  r:+5,  p:-5, v:-5},
-    manufacturing: {b:+10, r:-5,  p:+0, v:-5},
-    ecommerce:     {b:+0,  r:+0,  p:+10, v:-10},
-    fmcg:          {b:+0,  r:-5,  p:+10, v:-5},
-    utilities:     {b:+5,  r:+10, p:-5, v:-10},
-    logistics:     {b:+10, r:+10, p:+5,  v:-25},
-    aviation:      {b:+15, r:+0,  p:+0,  v:-15},
-    construction:  {b:+10, r:+0,  p:+0,  v:-10},
-    finance:       {b:+5,  r:+5,  p:+0,  v:-10},
-    public:        {b:+5,  r:+5,  p:+5,  v:-15},
-    other:         {}
-  };
+$('#downloadTemplate')?.addEventListener('click', ()=>{
+  const csv = [
+    'scope,amount_t,category',
+    'S1,120,stationary combustion',
+    'S2,300,location-based electricity',
+    'S3,950,upstream logistics'
+  ].join('\n');
+  dl('emissions_template.csv','text/csv;charset=utf-8',csv);
+});
 
-  document.getElementById('aiApply').addEventListener('click', ()=>{
-    const ind = document.getElementById('aiIndustry').value;
-    const goal = document.getElementById('aiGoal').value;
-    const base = GOAL[goal] || GOAL.balanced;
-    const mod  = IND[ind] || {};
-    let pct = {
-      b: Math.max(0, (base.b + (mod.b||0))),
-      r: Math.max(0, (base.r + (mod.r||0))),
-      p: Math.max(0, (base.p + (mod.p||0))),
-      v: Math.max(0, (base.v + (mod.v||0)))
-    };
-    const sum = pct.b + pct.r + pct.p + pct.v || 100;
-    pct = { b:100*pct.b/sum, r:100*pct.r/sum, p:100*pct.p/sum, v:100*pct.v/sum };
-    applyPreset(pct);
-  });
-
-  // ---------- AI Mix Advisor (Upload & Analyze) ----------
-  const det = { s1:null, s2_loc:null, s2_mkt:null, s3:null, total:null, suggestedMix:null };
-  $('#downloadTemplate').addEventListener('click', ()=>{
-    const rows = [
-      'scope,amount_t',
-      'S1,120',
-      'S2,300',
-      'S3,950'
-    ].join('\n');
-    dl('emissions_template.csv','text/csv;charset=utf-8',rows);
-  });
-
-  $('#aiAnalyzeBtn').addEventListener('click', async ()=>{
-    const file = $('#fileInput').files[0];
-    let parsed = null;
+$('#aiAnalyzeBtn')?.addEventListener('click', analyzeFile);
+async function analyzeFile(){
+  try{
+    const file = $('#fileInput')?.files?.[0];
+    let rows = null;
 
     if(file){
       const buf = await file.arrayBuffer();
       if(/\.(xlsx|xls)$/i.test(file.name)){
         const wb = XLSX.read(buf, {type:'array'});
-        const first = wb.SheetNames[0];
-        const json = XLSX.utils.sheet_to_json(wb.Sheets[first], {raw:true});
-        parsed = json;
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(sheet, {raw:true});
       }else{
-        const text = new TextDecoder('utf-8').decode(buf);
-        parsed = parseCSV(text);
+        rows = parseCSV(new TextDecoder('utf-8').decode(buf));
       }
     }else{
       const raw = $('#csvTextarea').value.trim();
-      if(raw) parsed = parseCSV(raw);
+      if(raw) rows = parseCSV(raw);
     }
 
-    if(!parsed || parsed.length===0){
-      alert('No rows detected. Please upload CSV/XLSX or paste CSV.');
-      return;
-    }
+    if(!rows || rows.length===0){ alert('No rows detected. Upload a file or paste CSV.'); return; }
 
-    const agg = aggregateEmissions(parsed);
+    // Aggregate S1/S2/S3 (+ flags)
+    const agg = aggregateEmissions(rows);
     det.s1 = round(agg.s1);
     det.s2_loc = round(agg.s2_loc);
     det.s2_mkt = agg.s2_mkt!==null ? round(agg.s2_mkt) : null;
     det.s3 = round(agg.s3);
-    det.total = round((agg.s1||0) + (agg.s2_loc||0) + (agg.s3||0)); // report location-based to stay conservative by default
+    det.total = round((det.s1||0) + (det.s2_loc||0) + (det.s3||0)); // default = location-based conservative
 
-    // Show detected
-    $('#detS1').textContent = isNum(det.s1) ? det.s1 : '—';
-    $('#detS2L').textContent = isNum(det.s2_loc) ? det.s2_loc : '—';
-    $('#detS2M').textContent = isNum(det.s2_mkt) ? det.s2_mkt : '—';
-    $('#detS3').textContent = isNum(det.s3) ? det.s3 : '—';
+    // UI: Detected totals
+    $('#detS1').textContent  = isNum(det.s1)? det.s1 : '—';
+    $('#detS2L').textContent = isNum(det.s2_loc)? det.s2_loc : '—';
+    $('#detS2M').textContent = isNum(det.s2_mkt)? det.s2_mkt : '—';
+    $('#detS3').textContent  = isNum(det.s3)? det.s3 : '—';
 
-    // Suggest total: full neutralisation (can be adjusted by user)
-    const suggestedTotal = det.total>0 ? det.total : Math.max(1, parseFloat(tTotal.value)||100);
-
-    // Suggest mix based on profile (more removals if S3 dominant, more renewables if S2 high)
+    // Advisor mix heuristika
     const s1 = det.s1||0, s2 = det.s2_loc||0, s3 = det.s3||0;
-    const sum = s1+s2+s3 || 1;
-    const s1p = s1/sum, s2p = s2/sum, s3p = s3/sum;
+    const sum = (s1+s2+s3)||1;
+    const s1p=s1/sum, s2p=s2/sum, s3p=s3/sum;
 
-    // Start with balanced
-    let mix = {b:25, r:50, p:15, v:10};
-
-    // Heuristics:
-    // - High S3: push removals (biochar) and a bit VCS
-    // - High S2: push renewables
-    // - If plastics keyword present in dataset categories -> increase plastic (handled via aggregate flags)
-    const flags = agg.flags || {};
-    mix.b += Math.round(20 * s3p);  // up to +20pp if S3 ~100%
-    mix.r += Math.round(20 * s2p);  // up to +20pp if S2 ~100%
-    if(flags.plasticsHeavy) mix.p = Math.min(40, mix.p + 10); // cap plastic 40%
-    // Normalise to 100
-    const mSum = mix.b + mix.r + mix.p + mix.v;
-    mix = { b: 100*mix.b/mSum, r: 100*mix.r/mSum, p: 100*mix.p/mSum, v: 100*mix.v/mSum };
+    let mix = { b:25, r:50, p:15, v:10 }; // balanced
+    mix.b += Math.round(20*s3p); // viac removals pri vysokej S3
+    mix.r += Math.round(20*s2p); // viac renew pri vysokej S2
+    if(agg.flags.plasticsHeavy) mix.p = Math.min(40, mix.p+10);
+    const k = mix.b+mix.r+mix.p+mix.v;
+    mix = { b:100*mix.b/k, r:100*mix.r/k, p:100*mix.p/k, v:100*mix.v/k };
 
     det.suggestedMix = mix;
+
+    const suggestedTotal = det.total>0 ? det.total : Math.max(1, parseFloat($('#tonnes').value)||100);
     $('#suggTotal').textContent = suggestedTotal.toLocaleString(undefined,{maximumFractionDigits:0});
     $('#suggMix').textContent = `Biochar ${mix.b.toFixed(0)}% • Renew ${mix.r.toFixed(0)}% • Plastic ${mix.p.toFixed(0)}% • VCS ${mix.v.toFixed(0)}%`;
     $('#applySuggestion').disabled = false;
 
-    // Enable apply -> sets total + sliders
+    // Apply button → nastaví total + slidery
     $('#applySuggestion').onclick = ()=>{
-      tTotal.value = Math.max(1, Math.round(suggestedTotal));
+      $('#tonnes').value = Math.max(1, Math.round(suggestedTotal));
       syncSliderMax();
-      applyPreset(mix);
+      applyPreset(mix);        // používa tvoju existujúcu funkciu
       window.location.hash = '#mix';
     };
+  }catch(err){
+    console.error(err);
+    alert('Parsing failed. Check headers or try the CSV template.');
+  }
+}
+
+/* ---------- Helpers pre parsing ---------- */
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return [];
+  const header = lines[0].split(',').map(h=>h.trim().toLowerCase());
+  return lines.slice(1).map(row=>{
+    const cols = row.split(','); const obj={};
+    header.forEach((h,i)=> obj[h] = (cols[i]??'').trim());
+    return obj;
   });
+}
+function aggregateEmissions(rows){
+  let s1=0, s2_loc=0, s2_mkt=null, s3=0, plasticsHeavy=false;
+  const lowerKeys = Object.keys(rows[0]||{}).map(k=>k.toLowerCase());
+  const hasTotals = lowerKeys.includes('scope1_t') || lowerKeys.includes('scope2_location_t') || lowerKeys.includes('scope3_t');
 
-  function parseCSV(text){
-    const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-    if(lines.length===0) return [];
-    const header = lines[0].split(',').map(h=>h.trim().toLowerCase());
-    return lines.slice(1).map(row=>{
-      const cols = row.split(','); const obj = {};
-      header.forEach((h,i)=> obj[h]= (cols[i]??'').trim());
-      return obj;
-    });
-  }
-  function isNum(v){ return typeof v==='number' && !isNaN(v) && isFinite(v); }
-  function round(v){ return isNum(v) ? Math.round((v + Number.EPSILON)*1000)/1000 : null; }
+  if(hasTotals){
+    const r = rows[0];
+    s1 = num(r.scope1_t);
+    s2_loc = num(r.scope2_location_t);
+    s2_mkt = (r.scope2_market_t!==undefined && r.scope2_market_t!=='') ? num(r.scope2_market_t) : null;
+    s3 = num(r.scope3_t);
+  }else{
+    for(const r of rows){
+      const scope = String(r.scope||r.Scope||'').toLowerCase();
+      const amt = num(r.amount_t ?? r.amount ?? r.t ?? r.co2_t ?? r.emissions_t);
+      if(!isFinite(amt)) continue;
+      if(scope.startsWith('s1') || scope==='scope1') s1 += amt;
+      else if(scope.startsWith('s2') || scope==='scope2') s2_loc += amt;
+      else if(scope.startsWith('s3') || scope==='scope3') s3 += amt;
 
-  // Accept two shapes:
-  // A) Row-wise: {scope: "S1|S2|S3|scope1|scope2|scope3", amount_t: number, category?: string}
-  // B) Single row totals: scope1_t, scope2_location_t, scope2_market_t, scope3_t
-  function aggregateEmissions(rows){
-    let s1=0, s2_loc=0, s2_mkt=null, s3=0;
-    let plasticsHeavy=false;
-
-    const lowerKeys = Object.keys(rows[0]||{}).map(k=>k.toLowerCase());
-    const hasTotals = lowerKeys.includes('scope1_t') || lowerKeys.includes('scope2_location_t') || lowerKeys.includes('scope3_t');
-
-    if(hasTotals){
-      const r = rows[0];
-      s1 = num(r.scope1_t);
-      s2_loc = num(r.scope2_location_t);
-      s2_mkt = has(r.scope2_market_t) ? num(r.scope2_market_t) : null;
-      s3 = num(r.scope3_t);
-      plasticsHeavy = false;
-    }else{
-      for(const r of rows){
-        const scope = String(r.scope||r.Scope||'').toLowerCase();
-        const amt = num(r.amount_t ?? r.amount ?? r.t ?? r.co2_t ?? r.emissions_t);
-        if(!isFinite(amt)) continue;
-        if(scope.startsWith('s1') || scope==='scope1') s1 += amt;
-        else if(scope.startsWith('s2') || scope==='scope2') s2_loc += amt;
-        else if(scope.startsWith('s3') || scope==='scope3') s3 += amt;
-
-        const cat = String(r.category||'').toLowerCase();
-        if(cat.includes('plastic') || cat.includes('polymer')) plasticsHeavy = true;
-      }
+      const cat = String(r.category||'').toLowerCase();
+      if(cat.includes('plastic') || cat.includes('polymer')) plasticsHeavy = true;
     }
-    return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy} };
   }
-  function num(v){
-    if(v===undefined || v===null || v==='') return 0;
-    const x = Number(String(v).replace(',', '.')); return isNaN(x)?0:x;
-  }
+  return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy} };
+}
+function num(v){ if(v===undefined||v===null||v==='') return 0; const x=Number(String(v).replace(',','.')); return isNaN(x)?0:x; }
+function isNum(v){ return typeof v==='number' && isFinite(v); }
+function round(v){ return isNum(v) ? Math.round((v+Number.EPSILON)*1000)/1000 : null; }
+
+/* ---------- (voliteľné) rýchla kontrola, či stránka beží bez chýb ---------- */
+window.addEventListener('error', e => console.error('JS error:', e.message));
 
   // ---------- ESRS / CSRD Exports ----------
   function collectModelSnapshot(){
