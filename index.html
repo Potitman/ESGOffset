@@ -45,7 +45,11 @@
       background:#1565C0; border-radius:999px; border:3px solid #0b1116; box-shadow:0 2px 4px rgba(0,0,0,.35)
     }
     input[type="range"]::-moz-range-thumb{ width:26px; height:26px; background:#1565C0; border:none; border-radius:999px }
+    .kbd{border:1px solid rgba(255,255,255,.2);padding:.1rem .35rem;border-radius:.375rem;background:rgba(255,255,255,.06);font-size:.8em}
   </style>
+
+  <!-- XLSX (for Excel upload) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
 </head>
 <body class="bg-[#0b1116] text-slate-100 antialiased">
 <a class="visually-hidden" href="#main">Skip to content</a>
@@ -141,9 +145,50 @@
         <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4 mb-3">
           <div class="flex items-center justify-between gap-2">
             <h3 class="text-base sm:text-lg font-semibold">AI Mix Advisor</h3>
-            <button id="aiApply" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-3 py-2 text-xs sm:text-sm text-brand-dark hover:shadow-soft">Apply preset</button>
+            <div class="flex items-center gap-2">
+              <button id="aiApply" class="rounded-full bg-gradient-to-tr from-brand to-brand-soft px-3 py-2 text-xs sm:text-sm text-brand-dark hover:shadow-soft">Apply preset</button>
+              <button id="aiAnalyzeBtn" class="rounded-full border border-white/20 px-3 py-2 text-xs sm:text-sm hover:shadow-soft">Analyze file</button>
+            </div>
           </div>
-          <p class="mt-1 text-[11px] sm:text-xs text-slate-400">We’ll preset a sensible mix; you can fine-tune sliders afterwards.</p>
+          <p class="mt-1 text-[11px] sm:text-xs text-slate-400">Upload your emissions CSV/XLSX (Scopes 1–3). We’ll estimate needed tCO₂ and recommend a mix.</p>
+
+          <!-- Upload area -->
+          <div class="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] items-end">
+            <div class="rounded-lg border border-white/15 bg-white/5 p-3">
+              <label for="fileInput" class="text-[11px] sm:text-xs text-slate-400">Upload CSV/XLSX (headers: <span class="kbd">scope</span>, <span class="kbd">amount_t</span> OR totals <span class="kbd">scope1_t</span>, <span class="kbd">scope2_location_t</span>, <span class="kbd">scope2_market_t</span>, <span class="kbd">scope3_t</span>)</label>
+              <input id="fileInput" type="file" accept=".csv, .xlsx, .xls" class="mt-2 w-full text-sm file:mr-3 file:rounded-md file:border file:border-white/15 file:bg-white/10 file:px-3 file:py-1.5 file:text-slate-200"/>
+              <div class="mt-2 text-[11px] sm:text-xs text-slate-400">Or paste CSV below:</div>
+              <textarea id="csvTextarea" rows="3" placeholder="scope,amount_t
+S1,120
+S2,300
+S3,950" class="mt-1 w-full rounded-md border border-white/15 bg-transparent p-2 text-xs"></textarea>
+              <div class="mt-2 flex flex-wrap gap-2 text-[11px] sm:text-xs">
+                <button id="downloadTemplate" class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download CSV template</button>
+                <span class="text-slate-500">Press <span class="kbd">Analyze file</span> to apply results.</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="rounded-lg border border-white/15 bg-white/5 p-3">
+                <div class="text-[11px] text-slate-400">Detected totals</div>
+                <div class="mt-1 text-xs">
+                  S1: <b id="detS1">—</b> t<br/>
+                  S2 (loc): <b id="detS2L">—</b> t<br/>
+                  S2 (mkt): <b id="detS2M">—</b> t<br/>
+                  S3: <b id="detS3">—</b> t
+                </div>
+              </div>
+              <div class="rounded-lg border border-white/15 bg-white/5 p-3">
+                <div class="text-[11px] text-slate-400">Advisor suggestion</div>
+                <div class="mt-1 text-xs">
+                  Total tCO₂: <b id="suggTotal">—</b><br/>
+                  Mix: <b id="suggMix">—</b>
+                </div>
+                <button id="applySuggestion" class="mt-2 w-full rounded-full bg-gradient-to-tr from-brand to-brand-soft px-3 py-1.5 text-xs text-brand-dark hover:shadow-soft" disabled>Apply to calculator</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Industry/Goal presets -->
           <div class="mt-3 grid gap-3 sm:grid-cols-2">
             <div>
               <label class="block text-[11px] sm:text-xs text-slate-400 mb-1">Industry</label>
@@ -236,7 +281,7 @@
           <div class="text-xs text-slate-400">Allocated: <b id="allocatedLbl">100.00</b> t • Total: <b id="totalLbl">100</b> t</div>
         </div>
 
-        <!-- Summary KPIs (už bez samostatného fee) -->
+        <!-- Summary KPIs (incl. markup) -->
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
           <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Avg. price / t (incl. markup)</div><b id="avgPrice" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
           <div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:p-4"><div class="text-[11px] text-slate-400">Est. subtotal (incl. markup)</div><b id="subtotal" class="text-base sm:text-lg" role="status" aria-live="polite">–</b></div>
@@ -434,17 +479,43 @@
       <h2 class="text-xl sm:text-2xl font-semibold">ESG reporting made simple</h2>
       <p class="mt-1 text-slate-300 text-sm sm:text-base">Export transaction-level data for GHG Protocol scopes 1/2/3 (incl. VCUs under VCS v4.4). Get PDF summaries for CSRD/ESRS and machine-readable CSV/JSON for auditors (ISAE 3000/3410 ready).</p>
       <div class="mt-3 overflow-x-auto rounded-xl border border-white/10">
-        <table class="min-w-[640px] w-full text-left text-sm">
+        <table class="min-w-[720px] w-full text-left text-sm">
           <thead class="bg-white/5">
             <tr><th class="px-4 py-3">Dataset</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Format</th><th class="px-4 py-3">Action</th></tr>
           </thead>
           <tbody>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">Certificate bundle</td><td class="px-4 py-3">All WL certificates incl. QR</td><td class="px-4 py-3">PDF/A</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download</button></td></tr>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">Transactions</td><td class="px-4 py-3">Line-items with unit IDs & TXIDs</td><td class="px-4 py-3">CSV/XLSX</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Export</button></td></tr>
-            <tr class="border-t border-white/10"><td class="px-4 py-3">API access</td><td class="px-4 py-3">Webhook + OAuth2 client</td><td class="px-4 py-3">JSON</td><td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Generate keys</button></td></tr>
+            <tr class="border-t border-white/10">
+              <td class="px-4 py-3">ESRS mapping</td>
+              <td class="px-4 py-3">E1-6 (Scopes 1–3, S2 loc/mkt) & E1-8 (Offsets)</td>
+              <td class="px-4 py-3">JSON</td>
+              <td class="px-4 py-3">
+                <button id="btnExportESRS" class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download</button>
+              </td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="px-4 py-3">Certificate bundle</td>
+              <td class="px-4 py-3">All WL certificates incl. QR</td>
+              <td class="px-4 py-3">PDF/A</td>
+              <td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Download</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="px-4 py-3">Transactions</td>
+              <td class="px-4 py-3">Line-items with unit IDs & TXIDs</td>
+              <td class="px-4 py-3">CSV</td>
+              <td class="px-4 py-3">
+                <button id="btnExportCSV" class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Export</button>
+              </td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="px-4 py-3">API access</td>
+              <td class="px-4 py-3">Webhook + OAuth2 client</td>
+              <td class="px-4 py-3">JSON</td>
+              <td class="px-4 py-3"><button class="rounded-full border border-white/20 px-3 py-1 hover:shadow-soft">Generate keys</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
+      <p class="mt-2 text-[11px] sm:text-xs text-slate-400">ESRS export includes Scope 2 market-based if provided; otherwise left null. All exports generated client-side.</p>
     </div>
   </section>
 
@@ -519,6 +590,11 @@
   const $ = s => document.querySelector(s);
   const fmtEUR = x => new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(x);
   const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
+  const dl = (name, mime, content)=>{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([content], {type:mime}));
+    a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  };
 
   // ---------- Header & misc ----------
   const drawer = $('#drawer');
@@ -647,7 +723,7 @@
     lRemain.textContent  = remaining.toFixed(2);
     barRemain.style.width = `${clamp(remaining / a.total * 100, 0, 100)}%`;
 
-    // costs (now incl. markup; no separate platform fee on top)
+    // costs (incl. markup)
     const subtotal = a.biochar*pb + a.renew*pr + a.plastic*pp + a.vcs*pv;
     const avg = subtotal / Math.max(1, a.total);
 
@@ -698,7 +774,7 @@
     const params = new URLSearchParams({
       t: a.total, bT: a.biochar, rT: a.renew, pT: a.plastic, vT: a.vcs,
       pb:p.pb.toFixed(2), pr:p.pr.toFixed(2), pp:p.pp.toFixed(2), pv:p.pv.toFixed(2),
-      mk: markupPct(a.total) // for sales to know applied markup tier
+      mk: markupPct(a.total)
     });
     const existing = getParamsFromPage();
     if(existing.get('src')) params.set('src', existing.get('src'));
@@ -758,7 +834,7 @@
     }
   }
 
-  // Events
+  // Events for sliders / total
   tTotal.addEventListener('input', ()=>{ syncSliderMax(); capIfOverTotal(); recalcAll(); });
   sBiochar.addEventListener('input', ()=> onSlide('biochar'));
   sRenew.addEventListener('input',   ()=> onSlide('renew'));
@@ -772,7 +848,7 @@
   });
   $('#openLink').addEventListener('click', ()=> window.open($('#rfqUrl').value,'_blank','noopener,noreferrer'));
 
-  // ---------- AI Mix Advisor logic ----------
+  // ---------- AI Mix Advisor logic (presets) ----------
   function applyPreset(pct){ // pct in %
     const T = Math.max(1, parseFloat(tTotal.value)||0);
     const b = Math.round(T * pct.b/100);
@@ -783,7 +859,6 @@
     recalcAll();
   }
 
-  // Base goal templates
   const GOAL = {
     balanced: {b:25,r:50,p:15,v:10},
     removal:  {b:45,r:35,p:5, v:15},
@@ -792,7 +867,6 @@
     brand:    {b:30,r:40,p:15,v:15},
     science:  {b:55,r:25,p:5, v:15}
   };
-  // Industry modifiers (percentage points before normalisation)
   const IND = {
     tech:          {b:+5,  r:+5,  p:-5, v:-5},
     manufacturing: {b:+10, r:-5,  p:+0, v:-5},
@@ -823,11 +897,272 @@
     applyPreset(pct);
   });
 
-  // Init
+  // ---------- AI Mix Advisor (Upload & Analyze) ----------
+  const det = { s1:null, s2_loc:null, s2_mkt:null, s3:null, total:null, suggestedMix:null };
+  $('#downloadTemplate').addEventListener('click', ()=>{
+    const rows = [
+      'scope,amount_t',
+      'S1,120',
+      'S2,300',
+      'S3,950'
+    ].join('\n');
+    dl('emissions_template.csv','text/csv;charset=utf-8',rows);
+  });
+
+  $('#aiAnalyzeBtn').addEventListener('click', async ()=>{
+    const file = $('#fileInput').files[0];
+    let parsed = null;
+
+    if(file){
+      const buf = await file.arrayBuffer();
+      if(/\.(xlsx|xls)$/i.test(file.name)){
+        const wb = XLSX.read(buf, {type:'array'});
+        const first = wb.SheetNames[0];
+        const json = XLSX.utils.sheet_to_json(wb.Sheets[first], {raw:true});
+        parsed = json;
+      }else{
+        const text = new TextDecoder('utf-8').decode(buf);
+        parsed = parseCSV(text);
+      }
+    }else{
+      const raw = $('#csvTextarea').value.trim();
+      if(raw) parsed = parseCSV(raw);
+    }
+
+    if(!parsed || parsed.length===0){
+      alert('No rows detected. Please upload CSV/XLSX or paste CSV.');
+      return;
+    }
+
+    const agg = aggregateEmissions(parsed);
+    det.s1 = round(agg.s1);
+    det.s2_loc = round(agg.s2_loc);
+    det.s2_mkt = agg.s2_mkt!==null ? round(agg.s2_mkt) : null;
+    det.s3 = round(agg.s3);
+    det.total = round((agg.s1||0) + (agg.s2_loc||0) + (agg.s3||0)); // report location-based to stay conservative by default
+
+    // Show detected
+    $('#detS1').textContent = isNum(det.s1) ? det.s1 : '—';
+    $('#detS2L').textContent = isNum(det.s2_loc) ? det.s2_loc : '—';
+    $('#detS2M').textContent = isNum(det.s2_mkt) ? det.s2_mkt : '—';
+    $('#detS3').textContent = isNum(det.s3) ? det.s3 : '—';
+
+    // Suggest total: full neutralisation (can be adjusted by user)
+    const suggestedTotal = det.total>0 ? det.total : Math.max(1, parseFloat(tTotal.value)||100);
+
+    // Suggest mix based on profile (more removals if S3 dominant, more renewables if S2 high)
+    const s1 = det.s1||0, s2 = det.s2_loc||0, s3 = det.s3||0;
+    const sum = s1+s2+s3 || 1;
+    const s1p = s1/sum, s2p = s2/sum, s3p = s3/sum;
+
+    // Start with balanced
+    let mix = {b:25, r:50, p:15, v:10};
+
+    // Heuristics:
+    // - High S3: push removals (biochar) and a bit VCS
+    // - High S2: push renewables
+    // - If plastics keyword present in dataset categories -> increase plastic (handled via aggregate flags)
+    const flags = agg.flags || {};
+    mix.b += Math.round(20 * s3p);  // up to +20pp if S3 ~100%
+    mix.r += Math.round(20 * s2p);  // up to +20pp if S2 ~100%
+    if(flags.plasticsHeavy) mix.p = Math.min(40, mix.p + 10); // cap plastic 40%
+    // Normalise to 100
+    const mSum = mix.b + mix.r + mix.p + mix.v;
+    mix = { b: 100*mix.b/mSum, r: 100*mix.r/mSum, p: 100*mix.p/mSum, v: 100*mix.v/mSum };
+
+    det.suggestedMix = mix;
+    $('#suggTotal').textContent = suggestedTotal.toLocaleString(undefined,{maximumFractionDigits:0});
+    $('#suggMix').textContent = `Biochar ${mix.b.toFixed(0)}% • Renew ${mix.r.toFixed(0)}% • Plastic ${mix.p.toFixed(0)}% • VCS ${mix.v.toFixed(0)}%`;
+    $('#applySuggestion').disabled = false;
+
+    // Enable apply -> sets total + sliders
+    $('#applySuggestion').onclick = ()=>{
+      tTotal.value = Math.max(1, Math.round(suggestedTotal));
+      syncSliderMax();
+      applyPreset(mix);
+      window.location.hash = '#mix';
+    };
+  });
+
+  function parseCSV(text){
+    const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    if(lines.length===0) return [];
+    const header = lines[0].split(',').map(h=>h.trim().toLowerCase());
+    return lines.slice(1).map(row=>{
+      const cols = row.split(','); const obj = {};
+      header.forEach((h,i)=> obj[h]= (cols[i]??'').trim());
+      return obj;
+    });
+  }
+  function isNum(v){ return typeof v==='number' && !isNaN(v) && isFinite(v); }
+  function round(v){ return isNum(v) ? Math.round((v + Number.EPSILON)*1000)/1000 : null; }
+
+  // Accept two shapes:
+  // A) Row-wise: {scope: "S1|S2|S3|scope1|scope2|scope3", amount_t: number, category?: string}
+  // B) Single row totals: scope1_t, scope2_location_t, scope2_market_t, scope3_t
+  function aggregateEmissions(rows){
+    let s1=0, s2_loc=0, s2_mkt=null, s3=0;
+    let plasticsHeavy=false;
+
+    const lowerKeys = Object.keys(rows[0]||{}).map(k=>k.toLowerCase());
+    const hasTotals = lowerKeys.includes('scope1_t') || lowerKeys.includes('scope2_location_t') || lowerKeys.includes('scope3_t');
+
+    if(hasTotals){
+      const r = rows[0];
+      s1 = num(r.scope1_t);
+      s2_loc = num(r.scope2_location_t);
+      s2_mkt = has(r.scope2_market_t) ? num(r.scope2_market_t) : null;
+      s3 = num(r.scope3_t);
+      plasticsHeavy = false;
+    }else{
+      for(const r of rows){
+        const scope = String(r.scope||r.Scope||'').toLowerCase();
+        const amt = num(r.amount_t ?? r.amount ?? r.t ?? r.co2_t ?? r.emissions_t);
+        if(!isFinite(amt)) continue;
+        if(scope.startsWith('s1') || scope==='scope1') s1 += amt;
+        else if(scope.startsWith('s2') || scope==='scope2') s2_loc += amt;
+        else if(scope.startsWith('s3') || scope==='scope3') s3 += amt;
+
+        const cat = String(r.category||'').toLowerCase();
+        if(cat.includes('plastic') || cat.includes('polymer')) plasticsHeavy = true;
+      }
+    }
+    return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy} };
+  }
+  function num(v){
+    if(v===undefined || v===null || v==='') return 0;
+    const x = Number(String(v).replace(',', '.')); return isNaN(x)?0:x;
+  }
+
+  // ---------- ESRS / CSRD Exports ----------
+  function collectModelSnapshot(){
+    // Activity totals (from last analyze if any; otherwise zeros)
+    const s1 = det.s1 ?? 0;
+    const s2_loc = det.s2_loc ?? 0;
+    const s2_mkt = (det.s2_mkt===null? null : det.s2_mkt); // keep null if absent
+    const s3 = det.s3 ?? 0;
+
+    // Mix & pricing snapshot
+    const a = getAllocations();
+    const prices = {
+      biochar: unitPrice('biochar', a.total),
+      renew:   unitPrice('renew',   a.total),
+      plastic: unitPrice('plastic', a.total),
+      vcs:     unitPrice('vcs',     a.total),
+      markup_pct: markupPct(a.total)
+    };
+    const lines = [
+      { product:'Biochar', t:a.biochar, eur_per_t:prices.biochar },
+      { product:'Renewable', t:a.renew, eur_per_t:prices.renew },
+      { product:'Plastic', t:a.plastic, eur_per_t:prices.plastic },
+      { product:'VCUs VCS v4.4', t:a.vcs, eur_per_t:prices.vcs },
+    ];
+    const offsets_purchased_t = a.biochar + a.renew + a.plastic + a.vcs;
+    const subtotal_eur = lines.reduce((s,x)=> s + x.t*x.eur_per_t, 0);
+    const avg_cost_eur_t = offsets_purchased_t>0 ? subtotal_eur/offsets_purchased_t : 0;
+
+    return {
+      esrs_version: "ESRS 1.0",
+      mix_lines: lines,
+      prices,
+      totals: { subtotal_eur, avg_cost_eur_t },
+      e1_6: {
+        scope1_t: s1,
+        scope2_location_t: s2_loc,
+        scope2_market_t: s2_mkt, // may be null
+        scope3_t: s3
+      },
+              e1_8: {
+          offsets_purchased_t,
+          allocation: {
+            biochar_t: a.biochar,
+            renewables_t: a.renew,
+            plastic_t: a.plastic,
+            vcu_vcs44_t: a.vcs
+          },
+          financials: {
+            subtotal_eur,
+            avg_cost_eur_t
+          },
+          claims_guidance: {
+            basis: "Neutralisation-first; compensation allowed where appropriate.",
+            notes: "Totals based on calculator selection; prices include volume-based markup tiers.",
+            scope2_basis: det.s2_mkt===null ? "location-based" : "market-based (provided)"
+          }
+        },
+        meta: {
+          generated_at_iso: new Date().toISOString(),
+          currency: "EUR",
+          pricing_tier_name: tierName(a.total),
+          total_requested_t: a.total
+        }
+    };
+  }
+
+  function exportESRSJSON(){
+    const payload = collectModelSnapshot();
+    const content = JSON.stringify(payload, null, 2);
+    dl(`esrs_mapping_${new Date().toISOString().slice(0,10)}.json`, 'application/json;charset=utf-8', content);
+  }
+
+  function exportTransactionsCSV(){
+    const a = getAllocations();
+    const price = {
+      biochar: unitPrice('biochar', a.total),
+      renew:   unitPrice('renew',   a.total),
+      plastic: unitPrice('plastic', a.total),
+      vcs:     unitPrice('vcs',     a.total),
+    };
+    const lines = [];
+    const header = [
+      'date_iso','product','standard','vintage','tonnes','eur_per_t','subtotal_eur','claim_type','notes'
+    ];
+    lines.push(header.join(','));
+
+    const today = new Date().toISOString().slice(0,10);
+    const pushRow = (product, standard, vintage, t, eur_t, claim, notes='')=>{
+      const sub = t*eur_t;
+      lines.push([
+        today,
+        q(product),
+        q(standard),
+        q(vintage),
+        n(t,3),
+        n(eur_t,2),
+        n(sub,2),
+        q(claim),
+        q(notes)
+      ].join(','));
+    };
+
+    // Map our four koše do CSV riadkov
+    if(a.biochar>0) pushRow('Biochar Removal','Puro.earth or comparable','2023–2025', a.biochar, price.biochar, 'Neutralisation','Removal credit · permanent storage (charred biomass)');
+    if(a.renew>0)   pushRow('Renewable Energy / AFOLU','Gold Standard / Verra','Various', a.renew, price.renew, 'Compensation','RE/AFOLU mix (reforestation, wind, solar, hydro)');
+    if(a.plastic>0) pushRow('Plastic Credits','PWRS / PCX','2024+', a.plastic, price.plastic, 'Compensation','Plastic recovery / recycling impact');
+    if(a.vcs>0)     pushRow('VCU','Verra VCS v4.4','Various', a.vcs, price.vcs, 'Neutralisation/Compensation','Depends on project type');
+
+    // Bonus: sumarizačný riadok
+    const totalT = a.biochar + a.renew + a.plastic + a.vcs;
+    const totalEUR = a.biochar*price.biochar + a.renew*price.renew + a.plastic*price.plastic + a.vcs*price.vcs;
+    lines.push(['','','','TOTAL', n(totalT,3),'', n(totalEUR,2),'',''].join(','));
+
+    const csv = '\ufeff' + lines.join('\n'); // BOM pre Excel
+    dl(`transactions_${today}.csv`, 'text/csv;charset=utf-8', csv);
+
+    function n(v,dp=2){ return Number(v||0).toFixed(dp); }
+    function q(s){ return `"${String(s||'').replace(/"/g,'""')}"`; }
+  }
+
+  // --- Hook up export buttons ---
+  $('#btnExportESRS')?.addEventListener('click', exportESRSJSON);
+  $('#btnExportCSV')?.addEventListener('click', exportTransactionsCSV);
+
+  // --- Initialise calculator from URL or defaults ---
   function init(){
     syncFromUrlOrDefaults();
   }
   init();
+
 </script>
 </body>
 </html>
