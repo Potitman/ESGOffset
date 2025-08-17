@@ -848,227 +848,362 @@ S3,950" class="mt-1 w-full rounded-md border border-white/15 bg-transparent p-2 
   });
   $('#openLink').addEventListener('click', ()=> window.open($('#rfqUrl').value,'_blank','noopener,noreferrer'));
 
-// ---------- AI Mix Advisor logic (presets) ----------
-// -------- Robust Analyze handler (replaces your old #aiAnalyzeBtn listener) ------
-$('#aiAnalyzeBtn').addEventListener('click', async ()=>{
-  try{
-    const file = $('#fileInput').files[0];
-    let rows = null;
+  // ---------- AI Mix Advisor: presety & aplikácia ----------
+  function applyPreset(pct){ // pct v %
+    const T = Math.max(1, parseFloat(tTotal.value)||0);
+    const b = Math.round(T * (pct.b||0)/100);
+    const r = Math.round(T * (pct.r||0)/100);
+    const p = Math.round(T * (pct.p||0)/100);
+    let v = T - (b+r+p); if(v<0) v=0;
+    sBiochar.value=b; sRenew.value=r; sPlastic.value=p; sVCS.value=v;
+    recalcAll();
+  }
 
-    if(file){
-      const buf = await file.arrayBuffer();
-      if(/\.(xlsx|xls)$/i.test(file.name)){
-        // prehľadáme všetky sheety a použijeme ten s najviac riadkami
-        const wb = XLSX.read(buf, {type:'array'});
-        let bestSheet = null, bestLen = -1;
-        for(const sn of wb.SheetNames){
-          const js = XLSX.utils.sheet_to_json(wb.Sheets[sn], {raw:true, defval:''});
-          if(js.length > bestLen){ bestLen = js.length; bestSheet = js; }
-        }
-        rows = bestSheet || [];
-      }else{
-        const text = new TextDecoder('utf-8').decode(buf);
-        rows = parseCSV(text);
-      }
-    }else{
-      const raw = $('#csvTextarea').value.trim();
-      if(raw) rows = parseCSV(raw);
-    }
+  const GOAL = {
+    balanced: {b:25,r:50,p:15,v:10},
+    removal:  {b:45,r:35,p:5, v:15},
+    cost:     {b:10,r:70,p:5, v:15},
+    plastic:  {b:15,r:40,p:35,v:10},
+    brand:    {b:30,r:40,p:15,v:15},
+    science:  {b:55,r:25,p:5, v:15}
+  };
+  const IND = {
+    tech:          {b:+5,  r:+5,  p:-5, v:-5},
+    manufacturing: {b:+10, r:-5,  p:+0, v:-5},
+    ecommerce:     {b:+0,  r:+0,  p:+10, v:-10},
+    fmcg:          {b:+0,  r:-5,  p:+10, v:-5},
+    utilities:     {b:+5,  r:+10, p:-5, v:-10},
+    logistics:     {b:+10, r:+10, p:+5,  v:-25},
+    aviation:      {b:+15, r:+0,  p:+0,  v:-15},
+    construction:  {b:+10, r:+0,  p:+0,  v:-10},
+    finance:       {b:+5,  r:+5,  p:+0,  v:-10},
+    public:        {b:+5,  r:+5,  p:+5,  v:-15},
+    other:         {}
+  };
 
-    if(!rows || rows.length===0) throw new Error('File empty or no rows detected');
-
-    const agg = aggregateEmissions(rows);
-    if(!agg || (agg.s1===0 && agg.s2_loc===0 && agg.s3===0 && agg.s2_mkt===null))
-      throw new Error('No Scope 1/2/3 numbers detected in any supported columns');
-
-    // Show detected
-    det.s1 = round(agg.s1);
-    det.s2_loc = round(agg.s2_loc);
-    det.s2_mkt = (agg.s2_mkt===null? null : round(agg.s2_mkt));
-    det.s3 = round(agg.s3);
-    det.total = round((det.s1||0)+(det.s2_loc||0)+(det.s3||0)); // default: location-based
-
-    $('#detS1').textContent = isNum(det.s1) ? det.s1 : '—';
-    $('#detS2L').textContent = isNum(det.s2_loc) ? det.s2_loc : '—';
-    $('#detS2M').textContent = isNum(det.s2_mkt) ? det.s2_mkt : '—';
-    $('#detS3').textContent = isNum(det.s3) ? det.s3 : '—';
-
-    // Heuristics for mix
-    const s1 = det.s1||0, s2 = det.s2_loc||0, s3 = det.s3||0;
-    const sum = (s1+s2+s3)||1, s1p=s1/sum, s2p=s2/sum, s3p=s3/sum;
-    const flags = agg.flags || {};
-    let mix = {b:25, r:50, p:15, v:10};
-    mix.b += Math.round(20*s3p);
-    mix.r += Math.round(20*s2p);
-    if(flags.plasticsHeavy) mix.p = Math.min(40, mix.p+10);
-    const mSum = mix.b+mix.r+mix.p+mix.v;
-    mix = { b:100*mix.b/mSum, r:100*mix.r/mSum, p:100*mix.p/mSum, v:100*mix.v/mSum };
-
-    det.suggestedMix = mix;
-    const suggestedTotal = det.total>0 ? det.total : Math.max(1, parseFloat(tTotal.value)||100);
-    $('#suggTotal').textContent = suggestedTotal.toLocaleString(undefined,{maximumFractionDigits:0});
-    $('#suggMix').textContent = `Biochar ${mix.b.toFixed(0)}% • Renew ${mix.r.toFixed(0)}% • Plastic ${mix.p.toFixed(0)}% • VCS ${mix.v.toFixed(0)}%`;
-    $('#applySuggestion').disabled = false;
-    $('#applySuggestion').onclick = ()=>{
-      tTotal.value = Math.max(1, Math.round(suggestedTotal));
-      syncSliderMax(); applyPreset(mix); window.location.hash = '#mix';
+  document.getElementById('aiApply').addEventListener('click', ()=>{
+    const ind = document.getElementById('aiIndustry').value;
+    const goal = document.getElementById('aiGoal').value;
+    const base = GOAL[goal] || GOAL.balanced;
+    const mod  = IND[ind] || {};
+    let pct = {
+      b: Math.max(0, (base.b + (mod.b||0))),
+      r: Math.max(0, (base.r + (mod.r||0))),
+      p: Math.max(0, (base.p + (mod.p||0))),
+      v: Math.max(0, (base.v + (mod.v||0)))
     };
-  }catch(err){
-    alert(`Parsing failed.\nReason: ${err.message}\n\nTips:\n• Use any of: scope, Scope, GHG Scope columns; or totals like scope1, scope1_t, s1 etc.\n• Amount columns: amount_t, t, tCO2e, emissions, quantity, tonnes, tons.\n• For Scope 2 market/location use headers containing 'market' / 'location'.`);
-    console.error('Analyze error:', err);
-  }
-});
-
-// -------- Helpers: CSV + numbers + aggregator (replace your parseCSV/num/aggregateEmissions) -----
-function normalizeKey(s){
-  return String(s||'')
-    .trim()
-    .replace(/\uFEFF/g,'')                 // BOM
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // diacritics
-    .toLowerCase()
-    .replace(/\s+/g,' ')
-    .replace(/[^a-z0-9 _-]/g,'');
-}
-
-function parseCSV(text){
-  if(!text) return [];
-  // detect delimiter by first line
-  const firstLine = text.split(/\r?\n/)[0]||'';
-  const delim = (firstLine.split(';').length > firstLine.split(',').length) ? ';' : ',';
-  // split into rows respecting quotes
-  const rows = [];
-  const re = new RegExp(`(${delim})(?=(?:[^"]*"[^"]*")*[^"]*$)`);
-  const lines = text.replace(/\uFEFF/g,'').split(/\r?\n/).filter(l=>l.trim()!=='');
-  if(lines.length===0) return [];
-  const header = lines[0].split(re).filter(s=>s!==delim).map(h=>normalizeKey(h.replace(/^"|"$/g,'')));
-  for(let i=1;i<lines.length;i++){
-    const cols = lines[i].split(re).filter(s=>s!==delim).map(v=>v.replace(/^"|"$/g,'').trim());
-    const obj = {};
-    header.forEach((h,idx)=> obj[h]= (cols[idx]??''));
-    rows.push(obj);
-  }
-  return rows;
-}
-
-function num(v){
-  if(v===undefined||v===null) return 0;
-  let s = String(v).trim();
-  if(s==='') return 0;
-  // parentheses => negative
-  const neg = /^\(.*\)$/.test(s);
-  s = s.replace(/[()]/g,'');
-  // remove thousands (space or comma), keep decimal separator (either . or ,)
-  s = s.replace(/\s+/g,'').replace(/(?<=\d)[,](?=\d{3}\b)/g,''); // , thousands
-  // convert decimal comma to dot
-  s = s.replace(/,/g,'.');
-  const x = Number(s);
-  if(isNaN(x)) return 0;
-  return neg ? -x : x;
-}
-
-function aggregateEmissions(rows){
-  // Build key map (synonyms)
-  const scopeKeys = ['scope','scopes','ghg scope','emission scope','scope category','category scope','scope_id'];
-  const amountKeys = ['amount_t','amount','t','tco2e','co2e_t','emissions','emissions_t','quantity','tonnes','tons','volume'];
-  const categoryKeys = ['category','name','activity','description','ghg category','lineitem','item'];
-  // Totals (wide) possible column names
-  const s1Keys = ['scope1','scope_1','scope 1','s1','scope1_t','scope1 (t)','scope1 t'];
-  const s2LocKeys = ['scope2 location','scope2 (location)','scope2_location','s2 location','scope2 loc','location-based','location based'];
-  const s2MktKeys = ['scope2 market','scope2 (market)','scope2_market','s2 market','market-based','market based'];
-  const s3Keys = ['scope3','scope_3','scope 3','s3','scope3_t','scope3 (t)','scope3 t'];
-
-  // Normalize row keys once
-  const normRows = rows.map(r=>{
-    const rr = {}; Object.keys(r).forEach(k=> rr[normalizeKey(k)] = r[k]); return rr;
+    const sum = pct.b + pct.r + pct.p + pct.v || 100;
+    pct = { b:100*pct.b/sum, r:100*pct.r/sum, p:100*pct.p/sum, v:100*pct.v/sum };
+    applyPreset(pct);
   });
 
-  // 1) Check wide totals (single row with totals)
-  let wideRow = null;
-  for(const r of normRows){
-    // if any of totals keys exists, treat as wide
-    const keys = Object.keys(r);
-    const hasAny = [...s1Keys, ...s2LocKeys, ...s3Keys].some(k => keys.includes(normalizeKey(k)));
-    if(hasAny){ wideRow = r; break; }
+  // ---------- AI Mix Advisor: template na stiahnutie ----------
+  document.getElementById('downloadTemplate').addEventListener('click', ()=>{
+    const rows = [
+      'scope,amount_t,category',
+      'S1,120,Boilers',
+      'S2,300,Electricity (location-based)',
+      'S3,950,Upstream logistics'
+    ].join('\n');
+    dl('emissions_template.csv','text/csv;charset=utf-8',rows);
+  });
+
+  // ---------- Robust Analyze (CSV/XLSX) ----------
+  const det = { s1:null, s2_loc:null, s2_mkt:null, s3:null, total:null, suggestedMix:null };
+
+  document.getElementById('aiAnalyzeBtn').addEventListener('click', async ()=>{
+    try{
+      const file = $('#fileInput').files[0];
+      let rows = null;
+
+      if(file){
+        const buf = await file.arrayBuffer();
+        if(/\.(xlsx|xls)$/i.test(file.name)){
+          const wb = XLSX.read(buf, {type:'array'});
+          // použijeme najväčší sheet
+          let best = [], maxLen = -1;
+          for(const sn of wb.SheetNames){
+            const js = XLSX.utils.sheet_to_json(wb.Sheets[sn], {raw:true, defval:''});
+            if(js.length>maxLen){ maxLen=js.length; best=js; }
+          }
+          rows = best;
+        }else{
+          const text = new TextDecoder('utf-8').decode(buf);
+          rows = parseCSV(text);
+        }
+      }else{
+        const raw = $('#csvTextarea').value.trim();
+        if(raw) rows = parseCSV(raw);
+      }
+
+      if(!rows || rows.length===0) throw new Error('File empty or no rows detected');
+
+      const agg = aggregateEmissions(rows);
+      if(!agg || (agg.s1===0 && agg.s2_loc===0 && agg.s3===0 && agg.s2_mkt===null))
+        throw new Error('No Scope 1/2/3 numbers detected in supported columns');
+
+      det.s1 = round(agg.s1);
+      det.s2_loc = round(agg.s2_loc);
+      det.s2_mkt = (agg.s2_mkt===null? null : round(agg.s2_mkt));
+      det.s3 = round(agg.s3);
+      det.total = round((det.s1||0)+(det.s2_loc||0)+(det.s3||0)); // default: location-based
+
+      // zobraz "Detected totals"
+      $('#detS1').textContent = isNum(det.s1) ? det.s1 : '—';
+      $('#detS2L').textContent = isNum(det.s2_loc) ? det.s2_loc : '—';
+      $('#detS2M').textContent = isNum(det.s2_mkt) ? det.s2_mkt : '—';
+      $('#detS3').textContent = isNum(det.s3) ? det.s3 : '—';
+
+      // navrh mixu
+      const s1 = det.s1||0, s2 = det.s2_loc||0, s3 = det.s3||0;
+      const sum = (s1+s2+s3)||1, s2p=s2/sum, s3p=s3/sum;
+      const flags = agg.flags || {};
+      let mix = {b:25, r:50, p:15, v:10};
+      mix.b += Math.round(20*s3p);
+      mix.r += Math.round(20*s2p);
+      if(flags.plasticsHeavy) mix.p = Math.min(40, mix.p+10);
+      const mSum = mix.b+mix.r+mix.p+mix.v;
+      mix = { b:100*mix.b/mSum, r:100*mix.r/mSum, p:100*mix.p/mSum, v:100*mix.v/mSum };
+
+      det.suggestedMix = mix;
+      const suggestedTotal = det.total>0 ? det.total : Math.max(1, parseFloat(tTotal.value)||100);
+      $('#suggTotal').textContent = suggestedTotal.toLocaleString(undefined,{maximumFractionDigits:0});
+      $('#suggMix').textContent = `Biochar ${mix.b.toFixed(0)}% • Renew ${mix.r.toFixed(0)}% • Plastic ${mix.p.toFixed(0)}% • VCS ${mix.v.toFixed(0)}%`;
+      $('#applySuggestion').disabled = false;
+      $('#applySuggestion').onclick = ()=>{
+        tTotal.value = Math.max(1, Math.round(suggestedTotal));
+        syncSliderMax(); applyPreset(mix); window.location.hash = '#mix';
+      };
+
+    }catch(err){
+      alert(`Analyze file zlyhalo.\nDôvod: ${err.message}\n\nTipy:\n• Akceptujeme široké (totals) aj riadkové tabuľky.\n• Hlavičky môžu byť: scope / amount_t alebo totals: scope1, scope2 (location/market), scope3.\n• Množstvo: amount_t, t, tco2e, emissions, quantity, tonnes, tons…\n• CSV podporuje , aj ; a aj Excel (.xlsx).`);
+      console.error('Analyze error:', err);
+    }
+  });
+
+  // ---------- Helpers: CSV, čísla, agregátor ----------
+  function normalizeKey(s){
+    return String(s||'')
+      .trim()
+      .replace(/\uFEFF/g,'')                                 // BOM
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')       // diakritika
+      .toLowerCase()
+      .replace(/\s+/g,' ')
+      .replace(/[^a-z0-9 _-]/g,'');
   }
-  if(wideRow){
-    const pick = (keyList)=> {
-      for(const k of keyList){ const nk = normalizeKey(k); if(wideRow[nk]!==undefined) return num(wideRow[nk]); }
-      return 0;
-    };
-    // scope2 market may be missing => return null
-    const s2mktVal = (()=>{ for(const k of s2MktKeys){ const nk=normalizeKey(k); if(wideRow[nk]!==undefined) return num(wideRow[nk]); } return null; })();
-    return {
-      s1: pick(s1Keys),
-      s2_loc: pick(s2LocKeys),
-      s2_mkt: s2mktVal,
-      s3: pick(s3Keys),
-      flags:{plasticsHeavy:false}
-    };
+  function parseCSV(text){
+    if(!text) return [];
+    const firstLine = text.split(/\r?\n/)[0]||'';
+    const delim = (firstLine.split(';').length > firstLine.split(',').length) ? ';' : ',';
+    const rows = [];
+    const re = new RegExp(`(${delim})(?=(?:[^"]*"[^"]*")*[^"]*$)`);
+    const lines = text.replace(/\uFEFF/g,'').split(/\r?\n/).filter(l=>l.trim()!=='');
+    if(lines.length===0) return [];
+    const header = lines[0].split(re).filter(s=>s!==delim).map(h=>normalizeKey(h.replace(/^"|"$/g,'')));
+    for(let i=1;i<lines.length;i++){
+      const cols = lines[i].split(re).filter(s=>s!==delim).map(v=>v.replace(/^"|"$/g,'').trim());
+      const obj = {};
+      header.forEach((h,idx)=> obj[h]= (cols[idx]??''));
+      rows.push(obj);
+    }
+    return rows;
   }
+  function num(v){
+    if(v===undefined||v===null) return 0;
+    let s = String(v).trim();
+    if(s==='') return 0;
+    const neg = /^\(.*\)$/.test(s);      // (123) -> -123
+    s = s.replace(/[()]/g,'');
+    s = s.replace(/\s+/g,'').replace(/(?<=\d)[,](?=\d{3}\b)/g,''); // tisícky
+    s = s.replace(/,/g,'.');             // desatinná čiarka
+    const x = Number(s);
+    return isNaN(x) ? 0 : (neg ? -x : x);
+  }
+  function isNum(v){ return typeof v==='number' && isFinite(v); }
+  function round(v){ return isNum(v) ? Math.round((v + Number.EPSILON)*1000)/1000 : null; }
 
-  // 2) Row-wise layout
-  let s1=0, s2_loc=0, s3=0; let s2_mkt=null; let plasticsHeavy=false;
+  // Akceptujeme:
+  // A) široké totals: scope1 / scope2 location / scope2 market / scope3
+  // B) riadkové: scope + amount_t (+ category)
+  function aggregateEmissions(rows){
+    const norm = rows.map(r=>{
+      const rr={}; Object.keys(r).forEach(k=> rr[normalizeKey(k)] = r[k]); return rr;
+    });
 
-  // detect actual column names in this sheet
-  const sample = normRows[0]||{};
-  const findCol = (cands)=> cands.map(normalizeKey).find(k => sample[k]!==undefined) || null;
-  const scopeCol = findCol(scopeKeys);
-  const amountCol = findCol(amountKeys);
-  const categoryCol = findCol(categoryKeys);
+    // pokus o "široký" formát (aspoň jeden z totals kľúčov)
+    const totalsKeys = [
+      'scope1','scope_1','scope 1','s1','scope1_t','scope1 (t)','scope1 t',
+      'scope2 location','scope2 (location)','scope2_location','s2 location','scope2 loc','location-based','location based',
+      'scope2 market','scope2 (market)','scope2_market','s2 market','market-based','market based',
+      'scope3','scope_3','scope 3','s3','scope3_t','scope3 (t)','scope3 t'
+    ].map(normalizeKey);
 
-  if(!scopeCol && !amountCol){
-    // try one more strategy: guess amount column as first numeric-like column
-    const keyCandidates = Object.keys(sample||{});
-    const maybeAmt = keyCandidates.find(k=> isFinite(num(sample[k])));
-    if(maybeAmt) { 
-      // and a scope-like key from remaining
-      const maybeScope = keyCandidates.find(k=> /scope|s[123]|direct|indirect/i.test(k));
-      if(maybeScope){ 
-        // use guessed cols
-        for(const r of normRows){
+    const maybeWide = norm.find(r=> Object.keys(r).some(k=> totalsKeys.includes(k)));
+    if(maybeWide){
+      const pick = (r, list)=> {
+        for(const k of list){ const nk=normalizeKey(k); if(r[nk]!==undefined) return num(r[nk]); }
+        return 0;
+      };
+      const s1 = pick(maybeWide, ['scope1','scope_1','scope 1','s1','scope1_t','scope1 (t)','scope1 t']);
+      const s2_loc = pick(maybeWide, ['scope2 location','scope2 (location)','scope2_location','s2 location','scope2 loc','location-based','location based']);
+      const s2_mkt = (()=>{
+        for(const k of ['scope2 market','scope2 (market)','scope2_market','s2 market','market-based','market based']){
+          const nk=normalizeKey(k); if(maybeWide[nk]!==undefined) return num(maybeWide[nk]);
+        }
+        return null;
+      })();
+      const s3 = pick(maybeWide, ['scope3','scope_3','scope 3','s3','scope3_t','scope3 (t)','scope3 t']);
+      return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy:false} };
+    }
+
+    // riadkový formát
+    const sKeys = ['scope','scopes','ghg scope','emission scope','scope category','category scope','scope_id'];
+    const aKeys = ['amount_t','amount','t','tco2e','co2e_t','emissions','emissions_t','quantity','tonnes','tons','volume'];
+    const cKeys = ['category','name','activity','description','ghg category','lineitem','item'];
+
+    // nájdeme skutočné názvy stĺpcov
+    const sample = norm[0]||{};
+    const findCol = (cands)=> cands.map(normalizeKey).find(k => sample[k]!==undefined) || null;
+    const scopeCol = findCol(sKeys);
+    const amountCol = findCol(aKeys);
+    const categoryCol = findCol(cKeys);
+
+    let s1=0, s2_loc=0, s3=0; let s2_mkt=null; let plasticsHeavy=false;
+
+    if(!scopeCol || !amountCol){
+      // fallback: skúsime prvý numerický stĺpec ako "amount" a iný textový ako "scope"
+      const keys = Object.keys(sample);
+      const maybeAmt = keys.find(k=> isFinite(num(sample[k])));
+      const maybeScope = keys.find(k=> /scope|s[123]|direct|indirect/i.test(k));
+      if(maybeAmt && maybeScope){
+        for(const r of norm){
           const sc = String(r[maybeScope]||'').toLowerCase();
           const amt = num(r[maybeAmt]);
           if(!isFinite(amt)) continue;
           if(/s1|scope ?1|direct/.test(sc)) s1 += amt;
-          else if(/s2|scope ?2/.test(sc)) s2_loc += amt;
-          else if(/s3|scope ?3/.test(sc)) s3 += amt;
+          else if(/s2|scope ?2/.test(sc)) {
+            const all = JSON.stringify(r).toLowerCase();
+            if(/market/.test(all)) s2_mkt = (s2_mkt||0)+amt;
+            else s2_loc += amt;
+          } else if(/s3|scope ?3|indirect/.test(sc)) s3 += amt;
         }
         return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy:false} };
       }
-      throw new Error('Could not find scope/amount columns');
+      // nič rozumné sme nenašli
+      return { s1:0, s2_loc:0, s2_mkt:null, s3:0, flags:{plasticsHeavy:false} };
     }
-  }
 
-  for(const r of normRows){
-    const sc = String(r[scopeCol]||'').toLowerCase();
-    const amt = num(r[amountCol]);
-    if(!isFinite(amt)) continue;
-    if(/s1|scope ?1|direct/.test(sc)) s1 += amt;
-    else if(/s2|scope ?2/.test(sc)) {
-      // try detect market/location via additional hint columns/values if present
-      const all = JSON.stringify(r).toLowerCase();
-      if(/market/.test(all)) {
-        s2_mkt = (s2_mkt||0) + amt;
-      } else {
-        s2_loc += amt; // default to location-based
+    for(const r of norm){
+      const sc = String(r[scopeCol]||'').toLowerCase();
+      const amt = num(r[amountCol]);
+      if(!isFinite(amt)) continue;
+      if(/s1|scope ?1|direct/.test(sc)) s1 += amt;
+      else if(/s2|scope ?2/.test(sc)){
+        const all = JSON.stringify(r).toLowerCase();
+        if(/market/.test(all)) s2_mkt = (s2_mkt||0) + amt;
+        else s2_loc += amt;
+      }
+      else if(/s3|scope ?3|indirect/.test(sc)) s3 += amt;
+
+      if(categoryCol){
+        const cat = String(r[categoryCol]||'').toLowerCase();
+        if(cat.includes('plastic') || cat.includes('polymer')) plasticsHeavy = true;
       }
     }
-    else if(/s3|scope ?3|indirect/.test(sc)) s3 += amt;
-
-    if(categoryCol){
-      const cat = String(r[categoryCol]||'').toLowerCase();
-      if(cat.includes('plastic') || cat.includes('polymer')) plasticsHeavy = true;
-    }
+    return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy} };
   }
-  return { s1, s2_loc, s2_mkt, s3, flags:{plasticsHeavy} };
-}
-  
+
+  // ---------- ESRS / CSV exporty ----------
+  function collectModelSnapshot(){
+    // detekované aktivity (ak Analyze neprebehlo, sú 0/null)
+    const s1 = det.s1 ?? 0;
+    const s2_loc = det.s2_loc ?? 0;
+    const s2_mkt = (det.s2_mkt===null? null : det.s2_mkt);
+    const s3 = det.s3 ?? 0;
+
+    // mix & ceny
+    const a = getAllocations();
+    const prices = {
+      biochar: unitPrice('biochar', a.total),
+      renew:   unitPrice('renew',   a.total),
+      plastic: unitPrice('plastic', a.total),
+      vcs:     unitPrice('vcs',     a.total),
+      markup_pct: markupPct(a.total)
+    };
+    const lines = [
+      { product:'Biochar',        t:a.biochar, eur_per_t:prices.biochar },
+      { product:'Renewable',      t:a.renew,   eur_per_t:prices.renew },
+      { product:'Plastic',        t:a.plastic, eur_per_t:prices.plastic },
+      { product:'VCUs VCS v4.4',  t:a.vcs,     eur_per_t:prices.vcs },
+    ];
+    const offsets_purchased_t = a.biochar + a.renew + a.plastic + a.vcs;
+    const subtotal_eur = lines.reduce((s,x)=> s + x.t*x.eur_per_t, 0);
+    const avg_cost_eur_t = offsets_purchased_t>0 ? subtotal_eur/offsets_purchased_t : 0;
+
+    return {
+      esrs_version: "ESRS 1.0",
+      mix_lines: lines,
+      prices,
+      totals: { subtotal_eur, avg_cost_eur_t, offsets_purchased_t },
+      e1_6: {
+        scope1_t: s1,
+        scope2_location_t: s2_loc,
+        scope2_market_t: s2_mkt, // môže byť null
+        scope3_t: s3
+      },
+      e1_8: {
+        offsets_purchased_t,
+        avg_cost_eur_t,
+        subtotal_eur
+      }
+    };
+  }
+
+  document.getElementById('btnExportESRS').addEventListener('click', ()=>{
+    const snapshot = collectModelSnapshot();
+    const pretty = JSON.stringify(snapshot, null, 2);
+    dl('esrs_snapshot.json','application/json;charset=utf-8', pretty);
+  });
+
+  document.getElementById('btnExportCSV').addEventListener('click', ()=>{
+    const snap = collectModelSnapshot();
+    const rows = [
+      ['product','t','eur_per_t','subtotal_eur'],
+      ...snap.mix_lines.map(l=>[
+        l.product,
+        l.t.toFixed(3),
+        l.eur_per_t.toFixed(2),
+        (l.t*l.eur_per_t).toFixed(2)
+      ]),
+      [],
+      ['scope1_t','scope2_location_t','scope2_market_t','scope3_t'],
+      [
+        (snap.e1_6.scope1_t||0),
+        (snap.e1_6.scope2_location_t||0),
+        (snap.e1_6.scope2_market_t==null?'':snap.e1_6.scope2_market_t),
+        (snap.e1_6.scope3_t||0)
+      ],
+      [],
+      ['offsets_purchased_t','avg_cost_eur_t','subtotal_eur'],
+      [
+        snap.totals.offsets_purchased_t,
+        snap.totals.avg_cost_eur_t.toFixed(2),
+        snap.totals.subtotal_eur.toFixed(2)
+      ]
+    ];
+    const csv = rows.map(r=> r.map(x=>{
+      const s = String(x);
+      return /[",;\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+    }).join(',')).join('\n');
+    dl('mix_export.csv','text/csv;charset=utf-8', csv);
+  });
+
   // --- Initialise calculator from URL or defaults ---
   function init(){
     syncFromUrlOrDefaults();
+    recalcAll();
   }
   init();
-
 </script>
 </body>
 </html>
